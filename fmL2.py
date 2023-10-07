@@ -5,9 +5,11 @@ import json
 import os
 import sqlite3
 import sys
+import time
 from itertools import chain
 from functools import lru_cache
 from itertools import chain
+from operator import itemgetter
 
 import requests
 
@@ -17,6 +19,7 @@ def config():
     return config
 
 api_host = config()["api"]["host"]
+data_dir = config()["data"]["root"]
 
 @lru_cache(maxsize=None)
 def league(id, tab=None, type=None, timezone=None):
@@ -105,6 +108,35 @@ def save_league_totw(league_id, until_year=2020):
         with open(path, "w") as f:
             json.dump(totws, f)
 
+def read_totw_file(league_id):
+    path = f"{data_dir}/totw/{league_id}.json"
+    with open(path, "r") as f:
+        return json.load(f)
+    
+def get_totw_ids(league_id):
+    try:
+        totw_list = read_totw_file(league_id)
+        ids = set(chain(*[[player["participantId"] for player in totw["players"]] 
+                           for totw in totw_list]))
+        return list(ids)
+    except FileNotFoundError:
+        pass
+
+def save_totw_list(league_id):
+    ids = get_totw_ids(league_id)
+    if ids:
+        with DB("players.db") as db:
+            db.create_player_table()
+            for i in ids:
+                try:
+                    print(f"Getting player {i}")
+                    info = player_info(i)
+                    db.insert_player(info)
+                except requests.exceptions.HTTPError as error:
+                    print(f"Error getting {i}: {str(error)}")
+                    time.sleep(5)
+
+
 def group_players_by_totw_count():
     root = config()["data"]["root"]
     player_dict = {}
@@ -144,52 +176,145 @@ def convert_market_value(market_value):
 def player_info(id):
     player_info = player(id)
     name = player_info["name"]
-    positions = sorted(player_info["origin"]["positionDesc"]["positions"], key=lambda d: -d["isMainPosition"])
-    positions = [position["strPosShort"]["label"] for position in positions]
+    try:
+        positions = sorted(player_info["origin"]["positionDesc"]["positions"], key=lambda d: -d["isMainPosition"])
+        positions = "/".join(position["strPosShort"]["label"] for position in positions)
+    except LookupError:
+        positions = ""
+    
     player_props = dict([(prop["translationKey"], prop) for prop in player_info["playerProps"]])
-    height = int(player_props["height_sentencecase"]["value"]["fallback"].split()[0])
+    try:
+        height = int(player_props["height_sentencecase"]["value"]["fallback"].split()[0])
+    except LookupError:
+        height = -1
+
     birth_date = int(player_props["years"]["dateOfBirth"]["utcTime"] / 1000)
-    foot = player_props["preferred_foot"]["value"]["fallback"] # enum
+    
+    try:
+        foot = player_props["preferred_foot"]["value"]["fallback"] # enum
+    except LookupError:
+        foot = ""
+
     country = player_props["country_sentencecase"]["countryCode"]
-    market_value = convert_market_value(player_props["transfer_value"]["value"]["fallback"])
+    try:
+        market_value = convert_market_value(player_props["transfer_value"]["value"]["fallback"])
+    except LookupError:
+        market_value = -1
+
     return {
         "id": id, "name": name, "positions": positions, "height": height, 
         "birth_date": birth_date, "foot": foot, 
         "country": country, "market_value": market_value
     }
 
-def create_players_table():
-    conn = sqlite3.connect("players.db")
-    cursor = conn.cursor()
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS players (
-            id INTEGER PRIMARY KEY,
-            name TEXT,
-            height INTEGER,
-            positions TEXT,
-            birth_date INTEGER,
-            foot TEXT,
-            country TEXT,
-            market_value INT
-        )
-    """)
-    return conn
+class DB:
+    def __init__(self, db_file):
+        self.db_file = db_file
+        self.connection = None
+        self.cursor = None
 
-def save_player_info(id):
-    info = player_info(id)
-    conn = create_players_table()
-    cursor = conn.cursor()
-    name = info["name"]
-    positions = ",".join(info["positions"])
-    height = info["height"]
-    birth_date = info["birth_date"]
-    foot = info["foot"]
-    country = info["country"]
-    market_value = info["market_value"]
-    cursor.execute("""
-        INSERT INTO players (id, name, height, positions, birth_date, foot, country, market_value)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    """, (id, name, height, positions, birth_date, foot, country, market_value))
+    def __enter__(self):
+        self.connection = sqlite3.connect(self.db_file)
+        self.cursor = self.connection.cursor()
+        return self
+    
+    def __exit__(self, exc_type, exc_value, traceback):
+        if self.connection:
+            self.connection.commit()
+            self.cursor.close()
+            self.connection.close()
+
+    def create_player_table(self):
+        self.cursor.execute("CREATE TABLE IF NOT EXISTS players(id, name, positions, height, birth_date, foot, country, market_value)")
+
+    def insert_player(self, info):
+        values = info.values()
+        self.cursor.execute(f"INSERT INTO players VALUES ({','.join(['?'] * len(values))})", tuple(values))
+
+    def get_player(self, id):
+        self.cursor.execute(f"SELECT * FROM players WHERE id=?", (id,))
+        return self.cursor.fetchone()
+
+@lru_cache(maxsize=None)
+def team(id, tab=None, type=None, timezone=None):
+    response = requests.get(f"{api_host}/teams",
+        headers={"Cache-Control": "no-cache"},
+        params={"id": id, "tab": tab or "overview", 
+                "type": type or "league", 
+                "timeZone": timezone or "America/Los_Angeles"
+        }
+    )
+    response.raise_for_status()
+    return response.json()
+
+def team_transfers(id):
+    try:
+        transfers = team(id)["transfers"]["data"]
+        return list(chain(*transfers.values()))
+    except LookupError:
+        return []
+
+def get_team_transfers(id):
+    path = f"{data_dir}/teams/transfers/{id}.json"
+    if os.path.exists(path):
+        with open(path, "r") as f:
+            return json.load(f)
+        
+    transfers = team_transfers(id)
+    if transfers:
+        os.makedirs(os.path.split(path)[0], exist_ok=True)
+        with open(path, "w") as f:
+            json.dump(transfers, f)
+    
+        return transfers
+    
+def get_league_transfers(id):
+    teams = league_teams(id)["teams"]
+    transfers = {}
+    for team in teams:
+        transfers[team] = get_team_transfers(team)
+    return transfers
+
+@lru_cache(maxsize=None)
+def match_details(id):
+    response = requests.get(f"{api_host}/matchDetails?matchId={id}")
+    response.raise_for_status()
+    return response.json()
+
+def get_match_player_info(id):
+    details = match_details(id)["content"]
+    [home, away] = details["lineup"]["lineup"]
+    home_players = list(chain(*home["players"])) + home["bench"]
+    away_players = list(chain(*away["players"])) + away["bench"]
+    return [player for player in [*home_players, *away_players] if player["stats"]]
+
+def get_match_player_stats(id):
+    players = get_match_player_info(id)
+    stats = []
+    for player in players:
+        player_stats = [i["stats"] for i in player["stats"]]
+        player_stats = [dict([(i["key"], i["value"]) for i in list(stats.values())]) for stats in player_stats]
+        player_stats = {k: v for d in player_stats for k, v in d.items() if k}
+        stats.append({
+            "id": player["id"], 
+            "name": player["name"]["fullName"],
+            "position": player["position"],
+            "role": player["role"],
+            "stats": player_stats
+        })
+    return stats
+
+@lru_cache(maxsize=None)
+def get_match_details_for_totw(totw):
+    min_rating = min([i["rating"] for i in totw])
+    match_ids = set(i["matchId"] for i in totw)
+    details = []
+    for i in match_ids:
+        player_stats = get_match_player_stats(i)
+        for player in player_stats:
+            if player["stats"]["rating_title"] >= min_rating:
+                details.append(player)
+    return details
 
 def main():
     if not os.path.exists("countries.json"):
@@ -208,14 +333,6 @@ def main():
             continue
         else:
             print(f"Saved.")
-
-# Features
-
-# def compress_data():
-#     pass
-
-# def backup_data():
-#     pass
 
 if __name__ == "__main__":
     pass
