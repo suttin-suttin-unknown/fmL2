@@ -1,4 +1,7 @@
 config.ini
-countries.json
+*.json
 venv/
 data/
+__pycache__/
+players.db
+todo.txt
