@@ -6,7 +6,6 @@ import os
 import sqlite3
 import sys
 import time
-from itertools import chain
 from functools import lru_cache
 from itertools import chain
 
@@ -298,7 +297,7 @@ def get_match_player_stats(id):
             "id": player["id"], 
             "name": player["name"]["fullName"],
             "position": player["position"],
-            "role": player["role"],
+            "role": player.get("role"),
             "stats": player_stats
         })
     return stats
