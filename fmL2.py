@@ -9,7 +9,6 @@ import time
 from itertools import chain
 from functools import lru_cache
 from itertools import chain
-from operator import itemgetter
 
 import requests
 
@@ -286,7 +285,7 @@ def get_match_player_info(id):
     [home, away] = details["lineup"]["lineup"]
     home_players = list(chain(*home["players"])) + home["bench"]
     away_players = list(chain(*away["players"])) + away["bench"]
-    return [player for player in [*home_players, *away_players] if player["stats"]]
+    return [player for player in [*home_players, *away_players] if player.get("stats", [])]
 
 def get_match_player_stats(id):
     players = get_match_player_info(id)
@@ -304,17 +303,36 @@ def get_match_player_stats(id):
         })
     return stats
 
-@lru_cache(maxsize=None)
-def get_match_details_for_totw(totw):
-    min_rating = min([i["rating"] for i in totw])
-    match_ids = set(i["matchId"] for i in totw)
-    details = []
-    for i in match_ids:
-        player_stats = get_match_player_stats(i)
-        for player in player_stats:
-            if player["stats"]["rating_title"] >= min_rating:
-                details.append(player)
-    return details
+def get_league_totw_info(league_id):
+    try:
+        round_ratings = []
+        for data in read_totw_file(league_id):
+            totw = data["players"]
+            round_id = totw[0]["roundNumber"]
+            round_ratings.append({
+                "round": round_id,
+                "ratings": [p["rating"] for p in totw],
+                "match_ids": list(set(p["matchId"] for p in totw))
+            })
+        return round_ratings
+    except FileNotFoundError:
+        return []
+    
+def get_league_totw_match_details(league_id):
+    for n, item in enumerate(get_league_totw_info(league_id), start=1):
+        match_detail = []
+        min_rating = min(item["ratings"])
+        for match_id in item["match_ids"]:
+            print(f"Fetching {match_id}.")
+            info = get_match_player_stats(match_id)
+            for player in info:
+                if player["stats"].get("rating_title", -1) >= min_rating:
+                    match_detail.append(player)
+            with open(f"{data_dir}/match_stats/{match_id}.json", "w") as f:
+                json.dump(match_detail, f)
+        if n % 10 == 0:
+            print("Pausing.")
+            time.sleep(5)
 
 def main():
     if not os.path.exists("countries.json"):
