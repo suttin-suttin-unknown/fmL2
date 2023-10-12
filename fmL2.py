@@ -249,7 +249,7 @@ def team_transfers(id):
     try:
         transfers = team(id)["transfers"]["data"]
         return list(chain(*transfers.values()))
-    except LookupError:
+    except (LookupError, TypeError):
         return []
 
 def get_team_transfers(id):
@@ -280,11 +280,14 @@ def match_details(id):
     return response.json()
 
 def get_match_player_info(id):
-    details = match_details(id)["content"]
-    [home, away] = details["lineup"]["lineup"]
-    home_players = list(chain(*home["players"])) + home["bench"]
-    away_players = list(chain(*away["players"])) + away["bench"]
-    return [player for player in [*home_players, *away_players] if player.get("stats", [])]
+    try:
+        details = match_details(id)["content"]
+        [home, away] = details["lineup"]["lineup"]
+        home_players = list(chain(*home["players"])) + home["bench"]
+        away_players = list(chain(*away["players"])) + away["bench"]
+        return [player for player in [*home_players, *away_players] if player.get("stats", [])]
+    except KeyError:
+        return []
 
 def get_match_player_stats(id):
     players = get_match_player_info(id)
