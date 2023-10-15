@@ -1,6 +1,7 @@
 import api
 from utils import convert_market_value
 
+import json
 import math
 from datetime import datetime
 
@@ -63,85 +64,112 @@ class Player(Record):
         player = cls(id)
         player._api_json = api.get_player(id)
         return player
-    
-    @property
-    def _position_data(self):
-        return self._api_json["origin"]["positionDesc"]["positions"]
-    
+
     @property
     def _player_props(self):
         return dict([(prop["translationKey"], prop) for prop in self._api_json["playerProps"]])
-
-    @property
-    def _birth_date(self):
-        return int(self._player_props["years"]["dateOfBirth"]["utcTime"] / 1000)
-
-    @property
-    def _country(self):
-        return self._player_props["country_sentencecase"]["countryCode"]
     
-    @property
-    def _market_value(self):
-        return self._player_props["transfer_value"]["value"]["fallback"]
-
     @property
     def name(self):
         return self._api_json["name"]
     
     @property
-    def positions(self):
-        positions = sorted(self._position_data, key=lambda d: -d["isMainPosition"])
-        return [(p["strPosShort"]["label"], p["occurences"]) for p in positions]
+    def market_value_string(self):
+        return self._player_props["transfer_value"]["value"]["fallback"]
+
+    @property
+    def position_occurences(self):
+        try:
+            positions = sorted(self._api_json["origin"]["positionDesc"]["positions"], key=lambda d: -d["isMainPosition"])
+            return dict([(p["strPosShort"]["label"], p["occurences"]) for p in positions])
+        except TypeError:
+            return None
     
     @property
-    def position_string(self):
+    def positions(self):
         try:
-            return "/".join(p[0] for p in self.positions)
-        except LookupError:
+            return list(self.position_occurences.keys())
+        except AttributeError:
+            return []
+        
+    @property
+    def position_string(self):
+        return "/".join(self.positions)
+    
+    @property
+    def preferred_foot(self):
+        try:
+            return self._player_props["preferred_foot"]["value"]["fallback"]
+        except KeyError:
+            return ""
+        
+    @property
+    def height_string(self):
+        try:
+            return self._player_props["height_sentencecase"]["value"]["fallback"]
+        except KeyError:
             return ""
 
     @property
     def height(self):
         try:
-            return int(self._player_props["height_sentencecase"]["value"]["fallback"].split()[0])
-        except LookupError:
+            return int(self.height_string.split()[0])
+        except (IndexError, TypeError, ValueError):
             return -1
         
     @property
     def birth_date(self):
         try:
-            return self._birth_date
-        except LookupError:
-            return -1
+            timestamp = int(self._player_props["years"]["dateOfBirth"]["utcTime"]/1000)
+            return datetime.fromtimestamp(timestamp).date()
+        except (KeyError, ValueError, AttributeError):
+            return None
+        
+    @property
+    def birth_date_string(self):
+        return str(self.birth_date or "")
         
     @property
     def country(self):
         try:
-            return self._country
-        except LookupError:
+            return self._player_props["country_sentencecase"]["countryCode"]
+        except KeyError:
             return ""
         
     @property
     def market_value(self):
         try:
-            return self._market_value
+            return convert_market_value(self.market_value_string)
         except LookupError:
             return -1
+
+    @property
+    def full_age(self):
+        days = (datetime.now().date() - self.birth_date).days
+        years = days // 365
+        days %= 365
+        months = days // 30
+        days %= 30
+        return (years, months, days)
+
+    @property
+    def full_age_string(self):
+        (years, months, days) = self.full_age
+        sections = [f"{years} years"]
+        if months != 0:
+            sections.append(f"{months} months")
+        if days != 0:
+            sections.append(f"{days} days")
+        return ", ".join(sections)
         
     @property
-    def _relative_age(self):
-        if self.birth_date == -1:
-            return -1
-        return round((datetime.now() - datetime.fromtimestamp(self.birth_date)).days / 365.25, 2)
-    
-    @property
     def age(self):
-        return math.floor(self._relative_age)
+        return self.full_age[0]
     
     @property
     def senior_appearances(self):
         try:
-            apps = [item["appearances"] for item in self._api_json["careerHistory"]["careerData"]["careerItems"]["senior"] if item["appearances"]]
+            apps = [_["appearances"] for _ in self._api_json["careerHistory"]["careerData"]["careerItems"]["senior"] if _["appearances"]]
             return sum(int(app) for app in apps)
         except LookupError:
             return -1
@@ -153,6 +181,8 @@ class Player(Record):
         stats = list(chain(*[_ for _ in stats]))
         minutes = [int(_[-1]["value"]) for _ in stats if _[-1]["key"] == "minutes_played"]
         return sum(minutes)
+
+    
 
 
 class Team(Record):
