@@ -8,6 +8,10 @@ from operator import itemgetter
 
 
 class Record(ABC, dict):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._datetime = datetime.now()
+
     @classmethod
     @abstractmethod
     def from_api(cls, id):
