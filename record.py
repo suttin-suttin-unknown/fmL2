@@ -118,8 +118,18 @@ class League(Record):
         return self["details"]["latestSeason"]
     
     @property
-    def stats_links(self):
-        return [itemgetter(*["Name", "TotwRoundsLink"])(_) for _ in self["stats"]["seasonStatLinks"]]
+    def totw_links(self):
+        try:
+            return [itemgetter(*["Name", "TotwRoundsLink"])(_) for _ in self["stats"]["seasonStatLinks"]]
+        except KeyError:
+            return []
+        
+    @property
+    def player_stat_links(self):
+        try:
+            return [itemgetter(*["name", "fetchAllUrl"])(_) for _ in self["stats"]["players"]]
+        except KeyError:
+            return []
     
     @property
     def team_ids(self):
@@ -154,7 +164,3 @@ class Team(Record):
     @property
     def contract_extensions(self):
         return self["transfers"]["data"]["Contract extension"]
-
-
-
-
