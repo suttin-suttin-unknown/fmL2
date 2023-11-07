@@ -2,11 +2,7 @@ import configparser
 import re
 import os
 import json
-from datetime import datetime
-
 from functools import lru_cache
-from itertools import chain
-from operator import itemgetter
 
 import requests
 
@@ -20,6 +16,12 @@ default_timezone = 'America/Vancouver'
 @lru_cache
 def get_player(player_id):
     response = requests.get(f'{api_host}/playerData', {'id': player_id})
+    return response.json()
+
+
+@lru_cache
+def get_league(league_id):
+    response = requests.get(f'{api_host}/leagues', {'id': league_id})
     return response.json()
 
 
@@ -43,6 +45,14 @@ def get_total_minutes(player_id):
     series = get_stat_series(player_id, 'minutes_played')
     for row in series:
         total += row['stats'].get('minutes_played', 0)
+    return total
+
+
+def get_total_starts(player_id):
+    total = 0
+    series = get_stat_series(player_id, 'matches_started')
+    for row in series:
+        total += row['stats'].get('matches_started', 0)
     return total
 
 
