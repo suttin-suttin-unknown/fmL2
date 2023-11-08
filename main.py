@@ -94,7 +94,7 @@ def get_total_appearances(player_id):
     senior_appearances = get_player(player_id)['careerHistory']['careerData']['careerItems']['senior']
     total = 0
     for team in senior_appearances:
-        if not team['hasUncertainData']:
+        if not team['hasUncertainData'] and team['appearances']:
             appearances = int(re.findall(r'\d+', team['appearances'])[0])
             total += appearances
     return total
