@@ -1,7 +1,8 @@
 import configparser
-import re
-import os
+import glob
 import json
+import os
+import re
 from functools import lru_cache
 
 import requests
@@ -15,8 +16,7 @@ default_timezone = 'America/Vancouver'
 
 @lru_cache
 def get_league(league_id):
-    response = requests.get(f'{api_host}/leagues', {'id': league_id})
-    return response.json()
+    return requests.get(f'{api_host}/leagues', {'id': league_id}).json()
 
 
 @lru_cache
@@ -44,18 +44,26 @@ def save_league_totws(league_id):
                     json.dump(response, f)
 
 
-
-
-
-
-
-
-
+@lru_cache
+def get_league_totw_season_fixtures(league_id):
+    league = get_league(league_id)
+    totw_seasons = [item['Name'] for item in league['stats']['seasonStatLinks']]
+    season_fixtures = []
+    for season in totw_seasons:
+        response = requests.get(f'{api_host}/fixtures', {'id': league_id, 'season': season}).json()
+        season_fixtures.append({'name': season, 'fixtures': response})
+    return season_fixtures
 
 
 @lru_cache
 def get_player(player_id):
     response = requests.get(f'{api_host}/playerData', {'id': player_id})
+    return response.json()
+
+
+@lru_cache
+def get_match_details(match_id):
+    response = requests.get(f'{api_host}/matchDetails', {'matchId': match_id})
     return response.json()
 
 
@@ -136,34 +144,3 @@ def get_total_appearances(player_id):
             total += appearances
     return total
 
-
-# def get_totw(league_id, season, round_id):
-#     path = os.path.join('data/totw', league_id, season.replace('/', '_'), round_id.replace('/', '_'))
-#     if not os.path.exists(path):
-#         response = requests.get(f'{api_host}/team-of-the-week/team', params={
-#             'leagueId': league_id, 'season': season, 'roundId': round_id
-#         })
-#         totw = response.json()
-#         if totw:
-#             os.makedirs(os.path.split(path)[0], exist_ok=True)
-#             with open(path, 'w') as f:
-#                 json.dump(totw, f)
-#         return totw
-    
-#     with open(path) as f:
-#         return json.load(f)
-    
-
-def get_fixtures(league_id, season):
-    path = os.path.join('data/fixtures', league_id, season.replace('/', '_'))
-    if not os.path.exists(path):
-        response = requests.get(f'{api_host}/fixtures', params={'id': league_id, 'season': season})
-        fixtures = response.json()
-        if fixtures:
-            os.makedirs(os.path.split(path)[0], exist_ok=True)
-            with open(path, 'w') as f:
-                json.dump(fixtures, f)
-        return fixtures
-
-    with open(path) as f:
-        return json.load(f)
