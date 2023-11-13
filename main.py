@@ -1,9 +1,10 @@
 import configparser
-import glob
 import json
 import os
 import re
+import time
 from functools import lru_cache
+from itertools import chain
 
 import requests
 
@@ -37,6 +38,7 @@ def save_league_totws(league_id):
         for row in item['rounds']:
             round_id = str(row['roundId']).replace('/', '_')
             path = os.path.join('data/leagues', str(league_id), 'totw/seasons', season_name, 'rounds', round_id)
+            print(path)
             if not os.path.exists(path):
                 response = requests.get(row['link']).json()
                 os.makedirs(os.path.split(path)[0], exist_ok=True)
@@ -45,7 +47,7 @@ def save_league_totws(league_id):
 
 
 @lru_cache
-def get_league_totw_season_fixtures(league_id):
+def get_league_fixtures(league_id):
     league = get_league(league_id)
     totw_seasons = [item['Name'] for item in league['stats']['seasonStatLinks']]
     season_fixtures = []
@@ -67,7 +69,37 @@ def get_match_details(match_id):
     return response.json()
 
 
+def get_match_player_stats(match_id):
+    try:
+        return get_match_details(match_id)['content']['lineup']['lineup']
+    except:
+        return []
 
+
+def save_league_match_stats(league_id):
+    season_fixtures = get_league_fixtures(league_id)
+    count = 0
+    for season in season_fixtures:
+        season_name = season['name']
+        fixtures = season['fixtures']
+
+        for fixture in fixtures:
+            match_id = fixture['id']
+            if fixture['status']['finished']:
+                path = os.path.join('data/leagues', str(league_id), 'stats/seasons', 
+                                    season_name.replace('/', '_'), 'matches', match_id)
+
+                if not os.path.exists(path):
+                    print(path)
+                    stats = get_match_player_stats(match_id)
+                    os.makedirs(os.path.split(path)[0], exist_ok=True)
+                    with open(path, 'w') as f:
+                        json.dump(stats, f)
+                    count += 1
+
+                if count % 50 == 0:
+                    print('Pausing.')
+                    time.sleep(15)
 
 
 def get_stat_series(player_id, *stat_names):
@@ -143,4 +175,3 @@ def get_total_appearances(player_id):
             appearances = int(re.findall(r'\d+', team['appearances'])[0])
             total += appearances
     return total
-
