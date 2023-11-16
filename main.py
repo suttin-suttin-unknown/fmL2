@@ -3,6 +3,8 @@ import json
 import os
 import re
 import time
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 from functools import lru_cache
 from itertools import chain
 
@@ -131,6 +133,16 @@ def get_total_starts(player_id):
     for row in series:
         total += row['stats'].get('matches_started', 0)
     return total
+
+
+def get_age(player_id, full=False):
+    player_props = get_player(player_id)['playerProps']
+    age = [prop for prop in player_props if prop.get('title') == 'Age'][0]
+    if not full:
+        return age['value']['fallback']
+    birth_date = datetime.fromtimestamp(int(age['dateOfBirth']['utcTime'] / 1000))
+    d = relativedelta(datetime.now(), birth_date)
+    return d.years, d.months, d.weeks, d.days
 
 
 def get_total_dribbles_attempted(player_id):
