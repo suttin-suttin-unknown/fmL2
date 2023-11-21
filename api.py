@@ -1,6 +1,7 @@
 import functools
 
 import requests
+from cachetools import cached, TTLCache
 
 
 def call_api(host, route, params={}):
@@ -20,8 +21,13 @@ def get_all_leagues():
     return fotmob_api(route='allLeagues')
 
 
+@cached(cache=TTLCache(maxsize=100, ttl=60 * 60))
 def get_league(league_id):
     return fotmob_api(route='leagues', params={'id': league_id})
+
+
+def get_totw_rounds(league_id, season):
+    return fotmob_api(route='team-of-the-week/rounds', params={'leagueId': league_id, 'season': season})
 
 
 def get_match_details(match_id):
