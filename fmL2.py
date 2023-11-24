@@ -1,5 +1,7 @@
+import glob
 import json
 import os
+import time
 from itertools import chain
 from operator import itemgetter
 
@@ -71,3 +73,24 @@ def save_totw(league_id, season, round_id):
     totw_rounds = [i['roundId'] for i in totw_rounds.get('rounds', [])]
     if str(round_id) in totw_rounds:
         save_api_json('team-of-the-week/team', params={'leagueId': league_id, 'season': season, 'roundId': round_id})
+
+
+def save_season_fixtures(league_id, season):
+    save_fixtures(league_id, season)
+    fixtures = {}
+    path = os.path.join(DATA_ROOT, 'fixtures', str(league_id), season.replace('/', '_'))
+    with open(path) as f:
+        fixtures = json.load(f)
+
+    fixture_ids = {i['id'] for i in fixtures if i['status'].get('reason', {}).get('longKey') == 'finished'}
+    saved_ids = {i for i in glob.glob(f'{DATA_ROOT}/matchDetails/*')}
+    saved_ids = {os.path.split(i)[-1] for i in saved_ids}
+    missing_ids = fixture_ids - saved_ids
+
+    for n, fixture_id in enumerate(missing_ids):
+        print(f'Saving {fixture_id}')
+        save_api_json('matchDetails', {'matchId': fixture_id})
+
+        if (n + 1) % 50 == 0:
+            print('Pausing.')
+            time.sleep(10)
