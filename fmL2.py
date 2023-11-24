@@ -1,6 +1,7 @@
 import json
 import os
 from itertools import chain
+from operator import itemgetter
 
 import requests
 
@@ -20,8 +21,21 @@ def save_api_json(route, params={}):
                 json.dump(response, f)
 
 
+def save_all_leagues():
+    save_api_json('allLeagues')
+
+
 def save_league(league_id):
-    save_api_json('leagues', params={'id': league_id})
+    save_all_leagues()
+    leagues = {}
+    with open(f'{DATA_ROOT}/allLeagues') as f:
+        leagues = json.load(f)
+    
+    leagues = list(chain(*itemgetter('international', 'countries')(leagues)))
+    leagues = list(chain(*[country['leagues'] for country in leagues]))
+    league_ids = [i['id'] for i in leagues]
+    if league_id in league_ids:
+        save_api_json('leagues', params={'id': league_id})
 
 
 def save_fixtures(league_id, season):
@@ -57,4 +71,3 @@ def save_totw(league_id, season, round_id):
     totw_rounds = [i['roundId'] for i in totw_rounds.get('rounds', [])]
     if str(round_id) in totw_rounds:
         save_api_json('team-of-the-week/team', params={'leagueId': league_id, 'season': season, 'roundId': round_id})
-
