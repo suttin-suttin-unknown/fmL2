@@ -2,6 +2,7 @@ config.ini
 *.json
 venv/
 data/
+data_copy/
 __pycache__/
 players.db
 todo.txt
