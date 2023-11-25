@@ -94,3 +94,25 @@ def save_season_fixtures(league_id, season):
         if (n + 1) % 50 == 0:
             print('Pausing.')
             time.sleep(10)
+
+
+def save_all_totws(league_id):
+    save_league(league_id)
+    league = {}
+    with open(f'{DATA_ROOT}/leagues/{league_id}') as f:
+        league = json.load(f)
+
+    stat_links = league.get('stats', {}).get('seasonStatLinks', [])
+    available_seasons = [i['Name'] for i in stat_links]
+    for season in available_seasons:
+        print(f'Saving TOTW rounds for {season}.')
+        save_totw_rounds(league_id, season)
+        totw_rounds = {}
+        path = os.path.join(DATA_ROOT, 'team-of-the-week/rounds', str(league_id), season.replace('/', '_'))
+        with open(path) as f:
+            totw_rounds = json.load(f)
+
+        totw_rounds = [i['roundId'] for i in totw_rounds['rounds']]
+        for round_id in totw_rounds:
+            print(f'Saving TOTW for {season} Round {round_id}')
+            save_totw(league_id, season, round_id)
