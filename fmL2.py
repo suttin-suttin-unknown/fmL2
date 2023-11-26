@@ -96,7 +96,7 @@ def save_season_fixtures(league_id, season):
             time.sleep(10)
 
 
-def save_all_totws(league_id):
+def save_league_totws(league_id):
     save_league(league_id)
     league = {}
     with open(f'{DATA_ROOT}/leagues/{league_id}') as f:
@@ -116,3 +116,38 @@ def save_all_totws(league_id):
         for round_id in totw_rounds:
             print(f'Saving TOTW for {season} Round {round_id}')
             save_totw(league_id, season, round_id)
+
+
+def get_all_leagues():
+    all_leagues = {}
+    path = f'{DATA_ROOT}/allLeagues'
+    if os.path.exists(path):
+        with open(path) as f:
+            all_leagues = json.load(f)
+    return all_leagues
+
+
+def get_league_list():
+    leagues = get_all_leagues()
+    leagues = list(chain(*itemgetter('international', 'countries')(leagues)))
+    for country in leagues:
+        country_name = country['name']
+        for league in country['leagues']:
+            yield country_name, itemgetter('id', 'name')(league)
+
+
+def save_totws_for_all_leagues():
+    save_all_leagues()
+    leagues = {}
+    with open(f'{DATA_ROOT}/allLeagues') as f:
+        leagues = json.load(f)
+    
+    leagues = list(chain(*itemgetter('international', 'countries')(leagues)))
+    leagues = list(chain(*[country['leagues'] for country in leagues]))
+    league_ids = [i['id'] for i in leagues]
+    for league_id in league_ids:
+        try:
+            print(f'Saving TOTWS for {league_id}')
+            save_league_totws(league_id)
+        except FileNotFoundError:
+            pass
