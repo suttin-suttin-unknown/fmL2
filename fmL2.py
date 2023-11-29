@@ -9,8 +9,7 @@ from operator import itemgetter
 import requests
 
 
-API_HOST = 'https://www.fotmob.com/api'
-DATA_ROOT = 'data_copy'
+DATA_ROOT = 'data'
 
 # hosts
 FOTMOB_API_HOST = 'https://www.fotmob.com/api'
@@ -116,18 +115,19 @@ def get_all_fotmob_fixture_ids(league_id):
 
 def save_all_fotmob_league_matches(league_id):
     fixture_ids = get_all_fotmob_fixture_ids(league_id)
-    saved_ids = {os.path.split(i)[-1] for i in glob.glob(f'{DATA_ROOT}/fotmob/{FOTMOB_MATCH_DETAILS_ROUTE}/*')}
+    saved_ids = {os.path.split(i)[-1] for i in glob.glob(f'{DATA_ROOT}/fotmob/{FOTMOB_MATCH_DETAILS_ROUTE}/{league_id}/*')}
     unsaved_ids = set(fixture_ids) - saved_ids
+    num_ids = len(unsaved_ids)
     for n, i in enumerate(unsaved_ids):
-        path = f'{DATA_ROOT}/fotmob/{FOTMOB_MATCH_DETAILS_ROUTE}/{i}'
+        path = f'{DATA_ROOT}/fotmob/{FOTMOB_MATCH_DETAILS_ROUTE}/{league_id}/{i}'
         match_details = get_document(path)
         if not match_details:
             url = f'{FOTMOB_API_HOST}/{FOTMOB_MATCH_DETAILS_ROUTE}'
             match_details = get_or_raise(url, params={'matchId': i})
-            print(f'Saving {path}')
+            print(f'({n + 1}/{num_ids}) Saving {path}')
             save_document(path, match_details)
         
-        if (n + 1) % 50 == 0:
+        if (n + 1) % 100 == 0:
             print('Pausing.')
             time.sleep(15)
 
@@ -160,4 +160,3 @@ def save_fotmob_totws(league_id):
                 totw = get_or_raise(url, params={'leagueId': league_id, 'season': season, 'roundId': round_id})
                 print(f'Saving {path}')
                 save_document(path, totw)
-
