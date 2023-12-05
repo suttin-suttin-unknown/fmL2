@@ -6,10 +6,4 @@ Mathemtician Georg Cantor was most famous for introducing the idea of cardinalit
 
 fmL2 attempts to do something similar with the global set of professional footballers. When looking for new players, how does one know where to start? You might have a set of attributes, you might watch a particular game or competition. 
 
-### Classes/Objects
-
-- Record
-    - lightweight wrapper for data from API
-    - adds some properties to each type of record for ease of access
-    - aside from api, abstracts i/o
 
