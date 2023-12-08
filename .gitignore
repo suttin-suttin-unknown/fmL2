@@ -6,3 +6,5 @@ data_copy/
 __pycache__/
 players.db
 todo.txt
+.DS_Store
+*.zip
