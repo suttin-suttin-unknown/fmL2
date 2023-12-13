@@ -32,6 +32,11 @@ class API:
         response = requests.get(f'{self.host}/fixtures', params={'id': league_id, 'season': season})
         response.raise_for_status()
         return response.json()
+    
+    def get_player(self, player_id):
+        response = requests.get(f'{self.host}/playerData', params={'id': player_id})
+        response.raise_for_status()
+        return response.json()
 
 
 def get_all_leagues():
@@ -80,19 +85,26 @@ def get_totw_rounds(league_id, season):
         return totw_rounds
     
 
-def get_totw_team(league_id, season, round_id):
-    totw_rounds = get_totw_rounds(league_id, season)
-    if totw_rounds:
-        table = get_db()['totw_team']
-        query = {'league_id': league_id, 'season': season, 'round_id': round_id}
-        totw_team = table.find_one(query)
-        if not totw_team:
-            totw_round_info = [i for i in totw_rounds['rounds'] if i['roundId'] == round_id]
-            if len(totw_round_info) == 1:
-                url = totw_round_info[0]['link']
-                response = requests.get(url)
-                response.raise_for_status()
-                totw_team = response.json()
-                totw_team = {**query, 'players': totw_team['players']}
-                table.insert_one(totw_team)
-        return totw_team
+def get_totw_teams(league_id, season):
+    totw_rounds = get_totw_rounds(league_id, season)['rounds']
+    table = get_db()['totw_team']
+    query = {'league_id': league_id, 'season': season}
+    totw_teams = table.find(query)
+    missing_rounds = {i['roundId'] for i in totw_rounds} - {i['round_id'] for i in totw_teams}
+    if len(missing_rounds) > 0:
+        teams = []
+        for i in totw_rounds:
+            round_id, link = itemgetter('roundId', 'link')(i)
+            if round_id in missing_rounds:
+                print(f'Fetching team from {link}')
+                team = requests.get(link).json()
+                teams.append({**query, 'round_id': round_id, 'players': team['players']})
+        table.insert_many(teams)
+    return list(table.find(query))
+
+
+def get_totw_players(league_id, season):
+    teams = get_totw_teams(league_id, season)
+    players = list(chain(*[[j for j in i['players']] for i in teams]))
+    return players
+    
