@@ -13,11 +13,96 @@ import requests
 from prettytable import PrettyTable
 
 
-country_league_ids = {
+competition_ids = {
+    'Albania': ['ALB1', 'ALB2'],
+    'Algeria': ['ALG1'],
+    'Argentina': ['AR1N', 'ARG2', 'ARG3'],
+    'Armenia': ['ARM1', 'ARM2'],
+    'Australia': ['AUS1', 'A2SW', 'A2VI'],
     'Austria': ['A1', 'A2'],
-    'Algeria': ['ALG1']
+    'Azerbaijan': ['AZ1'],
+    'Belgium': ['BE1', 'BE2'],
+    'Belarus': ['WER1'],
+    'Bolivia': ['BO1A'],
+    'Brazil': ['BRA1', 'BRA2'],
+    'Bosnia-Herzegovina': ['BOS1'],
+    'Bulgaria': ['BU1', 'BU2'],
+    'Chile': ['CLPD', 'CL2B'],
+    'Colombia': ['COL1'],
+    'Croatia': ['KR1'],
+    'Cyprus': ['ZYP1'],
+    'Czechia': ['TS1', 'TS2'],
+    'Denmark': ['DK1', 'DK2', 'DK30'],
+    'Ecuador': ['EL1S'],
+    'Egypt': ['EGY1'],
+    'England': ['GB2', 'GB3', 'GB4'],
+    'Finland': ['FI1'],
+    'France': ['FR1', 'FR2', 'FR3'],
+    'Germany': ['L1', 'L2', 'L3'],
+    'Ghana': ['GHPL'],
+    'Greece': ['GR1'],
+    'Georgia': ['GE1N'],
+    'Guatemala': ['GU1A'],
+    'Honduras': ['HO1A'],
+    'Hungary': ['UNG1'],
+    'Israel': ['ISR1'],
+    'Iceland': ['IS1'],
+    'Ireland': ['IR1'],
+    'Italy': ['IT1', 'IT2'],
+    'Japan': ['JAP1', 'JAP2', 'JAP3'],
+    'Kazakhstan': ['KAS1'],
+    'Latvia': ['LET1'],
+    'Lithuania': ['LI1'],
+    'Luxembourg': ['LUX1'],
+    'Macedonia': ['MAZ1'],
+    'Mexico': ['MEXA'],
+    'Montenegro': ['MNE1'],
+    'Moldova': ['MO1N'],
+    'Morocco': ['MAR1'],
+    'Netherlands': ['NL1', 'NL2'],
+    'New Zealand': ['NZNL'],
+    'Nigeria': ['NPFL'],
+    'Northern Ireland': ['NIR1'],
+    'Norway': ['NO1', 'NO2'],
+    'Panama': ['PN1C'],
+    'Paraguay': ['PR1C'],
+    'Peru': ['TDeC'],
+    'Poland': ['PL1', 'PL2'],
+    'Portugal': ['PO1', 'PO2'],
+    'Romania': ['RO1', 'RO2'],
+    'Russia': ['RU1', 'RU2'],
+    'Scotland': ['SC1', 'SC2'],
+    'Serbia': ['SER1'],
+    'Slovakia': ['SLO1'],
+    'Slovenia': ['SL1'],
+    'South Africa': ['SFA1'],
+    'South Korea': ['RSK1', 'RSK2'],
+    'Spain': ['ES1', 'ES2', 'E3G2', 'E3G1'],
+    'Sweden': ['SE1', 'SE2', 'SE3N', 'SE3S'],
+    'Switzerland': ['C1', 'C2'],
+    'Tunisia': ['TUN1'],
+    'Turkiye': ['TR1', 'TR2'],
+    'Ukraine': ['UKR1'],
+    'United States': ['MLS1', 'USL'],
+    'Uruguay': ['URU1', 'URU2'],
+    'Venezuela': ['VZ1L']
 }
 
+position_codes = {
+    'Attacking Midfield': 'AM',
+    'Central Midfield': 'CM',
+    'Centre-Back': 'CB',
+    'Centre-Forward': 'CF',
+    'Defensive Midfield': 'DM',
+    'Goalkeeper': 'GK',
+    'Left Midfield': 'LM',
+    'Left Winger': 'LW',
+    'Left-Back': 'LB',
+    'Right Midfield': 'RM',
+    'Right Winger': 'RW',
+    'Right-Back': 'RB',
+    'Second Striker': 'SS'
+}
 
 class API:
     def __init__(self):
@@ -57,7 +142,7 @@ class Competition:
         self.clubs = clubs
 
     @classmethod
-    def from_api(cls, id, season_id):
+    def load(cls, id, season_id):
         competition = None
         path = f'data/transfermarkt/competitions/{id}/{season_id}'
         if os.path.exists(path):
@@ -73,7 +158,7 @@ class Competition:
         id, name, season_id, clubs = itemgetter('id', 'name', 'seasonID', 'clubs')(competition)
         return cls(id, name, season_id, clubs)
     
-    def get_all_players(self):
+    def save_all_players(self):
         for club in self.clubs:
             club_id, club_name = itemgetter('id', 'name')(club)
             path = f'data/transfermarkt/competitions/{self.id}/players/{self.season_id}/{club_id}'
@@ -91,10 +176,47 @@ class Competition:
                         json.dump(players, f)
 
                 except requests.exceptions.HTTPError:
-                    print(f'Error fetching players for {club_id}.')
+                    print(f'Error fetching players for {club_id}')
                     continue
 
             yield players
+
+    def get_all_players(self):
+        paths = glob.glob(f'data/transfermarkt/competitions/{self.id}/players/{self.season_id}/*')
+        for path in paths:
+            with open(path) as f:
+                players = json.load(f)
+
+            club_id = players['id']
+            club_name = [i['name'] for i in self.clubs if i['id'] == club_id][0]
+
+            for player in players['players']:
+                yield {'club': club_name, **player}
+
+    def filter_players(self, **filters):
+        age_min = filters.get('age_min', 0)
+        age_max = filters.get('age_max', float('inf'))
+        market_value_min = filters.get('market_value_min', 0)
+        market_value_max = filters.get('market_value_max', float('inf'))
+
+        assert isinstance(age_min, int), f'Invalid age_min: {age_min}'
+        assert isinstance(age_max, (int, float)), f'Invalid age_max: {age_max}'
+        assert age_min < age_max, f'age_min ({age_min}) should be less than age_max ({age_max})'
+
+        assert isinstance(market_value_min, int), f'Invalid market_value_min: {market_value_min}'
+        assert isinstance(market_value_max, (int, float)), f'Invalid market_value_max: {market_value_max}'
+        assert market_value_min < market_value_max, f'market_value_min ({market_value_min}) should be less than market_value_max ({market_value_max})' 
+
+        for i in self.get_all_players():
+            age = int(i['age'])
+            market_value = convert_price_string(i['marketValue'])
+            if age and market_value and (age_min <= age <= age_max) and (market_value_min <= market_value <= market_value_max):
+                yield i 
+
+        
+
+
+
 
 
 def player_row(r):
@@ -211,30 +333,9 @@ def print_display_table(players):
     table.add_rows(players)
     print(table)
 
-    
     market_values = [convert_price_string(i[-1]) for i in players]
     print(f'Mean MV: {convert_value(statistics.mean(market_values))}')
     print(f'Harmonic Mean MV: {convert_value(statistics.harmonic_mean(market_values))}')
-
-
-    # stats = PrettyTable()
-    # stat_fields = ['Mean MV', 'HMean MV']
-    # stats.field_names = stat_fields
-    # for i in stat_fields:
-    #     stats[i].align = 'l'
-
-    
-    # stats.add_row([statistics.mean(market_values), statistics.harmonic_mean(market_values)])
-    # print(stats)
-
-
-# def get_player_tables(age_min, age_max, price_min, price_max):
-#     for i in get_tables(age_min, age_max, price_min, price_max):
-#         table = get_player_display_table()
-#         table.add_rows(i)
-#         print(table)
-
-
 
 
 def get_tables(age_min, age_max, price_min, price_max):
@@ -242,4 +343,3 @@ def get_tables(age_min, age_max, price_min, price_max):
     players = sorted(files.values(), key=lambda d: len(d))
     for i in players:
         yield sorted(i, key=lambda d: -convert_price_string(d[-1]))
-
