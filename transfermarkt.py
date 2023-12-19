@@ -98,10 +98,12 @@ position_codes = {
     'Left Midfield': 'LM',
     'Left Winger': 'LW',
     'Left-Back': 'LB',
+    'Mittelfeld': 'M',
     'Right Midfield': 'RM',
     'Right Winger': 'RW',
     'Right-Back': 'RB',
-    'Second Striker': 'SS'
+    'Second Striker': 'SS',
+    'Striker': 'ST'
 }
 
 class API:
@@ -199,6 +201,8 @@ class Competition:
         market_value_min = filters.get('market_value_min', 0)
         market_value_max = filters.get('market_value_max', float('inf'))
 
+        chosen_foot = filters.get('chosen_foot')
+
         assert isinstance(age_min, int), f'Invalid age_min: {age_min}'
         assert isinstance(age_max, (int, float)), f'Invalid age_max: {age_max}'
         assert age_min < age_max, f'age_min ({age_min}) should be less than age_max ({age_max})'
@@ -207,139 +211,48 @@ class Competition:
         assert isinstance(market_value_max, (int, float)), f'Invalid market_value_max: {market_value_max}'
         assert market_value_min < market_value_max, f'market_value_min ({market_value_min}) should be less than market_value_max ({market_value_max})' 
 
+        if chosen_foot:
+            assert chosen_foot in ['left', 'right', 'both'], f'Invalid foot: {chosen_foot}'
+
+
         for i in self.get_all_players():
-            age = int(i['age'])
-            market_value = convert_price_string(i['marketValue'])
-            if age and market_value and (age_min <= age <= age_max) and (market_value_min <= market_value <= market_value_max):
-                yield i 
+            try:
+                age = int(i['age'])
+                market_value = convert_price_string(i['marketValue'])
+                foot = i.get('foot')
+            except:
+                continue
 
-        
+            allow = bool(age) and bool(market_value)
+            allow &= (age_min <= age <= age_max)
+            allow &= (market_value_min <= market_value <= market_value_max)
+            if chosen_foot:
+                allow &= (foot == chosen_foot)
 
+            if allow:
+                yield i
 
-
-
-
-def player_row(r):
-    name = r.get('name', '-')
-    nationality = '/'.join(r.get('nationality', []))
-    position = r.get('position', '-')
-    position = re.sub('-', ' ', position)
-    if position == 'Goalkeeper':
-        position = 'GK'
-    else:
-        position = ''.join([i[0] for i in position.split()])
-    age = r.get('age', '-')
-    club = r.get('club', '-')
-    market_value = r.get('marketValue', '-')
-    return [name, nationality, position, club, age, market_value]
-
-
-def get_competition_files():
-    competitions = glob.glob(f'transfermarkt/competitions/*')
-    for i in competitions:
-        players = glob.glob(os.path.join(i, 'players/*'))
-        for j in players:
-            with open(j) as f:
-                yield json.load(f)
-
-
-def filter_files(age_min, age_max, price_min, price_max):
-    files = get_competition_files()
-    filter_count = {}
-    for n, i in enumerate(files):
-        for club in i:
-            players = club.get('players', [])
-            for player in players:
-                age = int(player.get('age') or -1)
-                market_value = convert_price_string(player.get('marketValue', '-'))
-                if (age_min <= age <= age_max) and (price_min <= market_value <= price_max):
-                    player = {'club': club['name'], **player}
-                    if filter_count.get(n):
-                        filter_count[n].append(player_row(player))
-                    else:
-                        filter_count[n] = [player_row(player)]
-    return filter_count
-        
-
-def get_player_display_table():
+def get_table(players, sort='marketValue', include=['name', 'age', 'nationality', 'club', 'position', 'marketValue', 'foot']):
     table = PrettyTable()
-    fields = ['Name', 'Nationality', 'Position', 'Club', 'Age', 'Market Value']
-    table.field_names = fields
-    for i in fields:
+    table.field_names = include
+    for i in table.field_names:
         table.align[i] = 'l'
-    
+
+    if sort == 'marketValue':
+        players = sorted(players, key=lambda d: -convert_price_string(d['marketValue']))
+
+    if sort == 'age':
+        players = sorted(players, key=lambda d: int(d['age']))
+
+    for player in players:
+        if 'nationality' in player:
+            nationality = player.get('nationality', [])
+            player['nationality'] = '/'.join(nationality)
+        
+        if 'position' in player:
+            position = player.get('position')
+            player['position'] = position_codes.get(position) or position
+
+        table.add_row([player.get(k, '-') for k in include])
+
     return table
-
-
-def partition_player_table(players):
-    unmarked = [i for i in players if i[-1] == '-']
-    marked = [i for i in players if i[-1] != '-']
-    if marked:
-        market_values = [convert_price_string(i[-1]) for i in marked]
-        mn = statistics.mean(market_values)
-        hmn = statistics.harmonic_mean(market_values)
-        mx = max(market_values)
-        mx_mn = statistics.mean([i for i in market_values if mn <= i <= mx])
-        mn_hmn = statistics.mean([i for i in market_values if hmn <= i <= mn])
-        hmn_0 = statistics.mean([i for i in market_values if 0 <= i <= hmn])
-
-        tier1a = [i for i in marked if mx_mn <= convert_price_string(i[-1]) <= mx]
-        tier1b = [i for i in marked if mn <= convert_price_string(i[-1]) <= mx_mn]
-        tier2a = [i for i in marked if mn_hmn <= convert_price_string(i[-1]) <= mn]
-        tier2b = [i for i in marked if hmn <= convert_price_string(i[-1]) <= mn_hmn]
-        tier3a = [i for i in marked if hmn_0 <= convert_price_string(i[-1]) <= hmn]
-        tier3b = [i for i in marked if 0 <= convert_price_string(i[-1]) <= hmn_0]
-
-        print(f'\nTier 1A\n')
-        t1a = get_player_display_table()
-        t1a.add_rows(tier1a)
-        print(t1a)
-
-        print(f'\nTier 1B\n')
-        t1b = get_player_display_table()
-        t1b.add_rows(tier1b)
-        print(t1b)
-
-        print(f'\nTier 2A\n')
-        t2a = get_player_display_table()
-        t2a.add_rows(tier2a)
-        print(t2a)
-
-
-    #     print(f'\nTier 2B\n')
-    #     t2b = get_player_display_table()
-    #     t2b.add_rows(tier2b)
-    #     print(t2b)
-
-    #     print(f'\nTier 3A\n')
-    #     t3a = get_player_display_table()
-    #     t3a.add_rows(tier3a)
-    #     print(t3a)
-
-    #     print(f'\nTier 3B\n')
-    #     t3b = get_player_display_table()
-    #     t3b.add_rows(tier3b)
-    #     print(t3b)
-
-    # if unmarked:
-    #     table = get_player_display_table()
-    #     table.add_rows(unmarked)
-    #     print('\nUnmarked\n')
-    #     print(table)
-
-
-def print_display_table(players):
-    table = get_player_display_table()
-    table.add_rows(players)
-    print(table)
-
-    market_values = [convert_price_string(i[-1]) for i in players]
-    print(f'Mean MV: {convert_value(statistics.mean(market_values))}')
-    print(f'Harmonic Mean MV: {convert_value(statistics.harmonic_mean(market_values))}')
-
-
-def get_tables(age_min, age_max, price_min, price_max):
-    files = filter_files(age_min, age_max, price_min, price_max)
-    players = sorted(files.values(), key=lambda d: len(d))
-    for i in players:
-        yield sorted(i, key=lambda d: -convert_price_string(d[-1]))
