@@ -233,17 +233,12 @@ def get_all_club_players(competition_id, season_id, update=False, log=False):
         yield get_club_players(club['id'], season_id, update=update)
 
 
-foot_codes = {
-    'B': 'both',
-    'L': 'left',
-    'R': 'right'
-}
-
 class Player:
     def __init__(self, **club_entry):
         self.id = club_entry.get('id')
         self.name = club_entry.get('name')
         self.age = club_entry.get('age')
+        self.club = club_entry.get('club')
         self.contract = club_entry.get('contract')
         self.date_of_birth = club_entry.get('dateOfBirth')
         self.foot = club_entry.get('foot')
@@ -314,6 +309,7 @@ class Player:
         info = {
             'id': self.id,
             'name': self.name,
+            'club': self.club,
             'contract': self.contract,
             'date_of_birth': self.date_of_birth,
             'foot': self.foot,
@@ -374,3 +370,129 @@ def save_competition_players_to_db(competition_id, season_id, log=False):
             print(f'Saving {len(missing_players)} players')
             players = [i for i in players if i['id'] in missing_players]
             table.insert_many(players)
+
+
+def search(**filters):
+    query = {}
+
+    # age
+    age_max = filters.get('age_max')
+    age_min = filters.get('age_min')
+    if age_max or age_min:
+        query['age'] = {}
+        if age_max:
+            query['age']['$lte'] = age_max
+        if age_min:
+            query['age']['$gte'] = age_min
+
+    # mv
+    mv_max = filters.get('mv_max')
+    mv_min = filters.get('mv_min')
+    if mv_max or mv_min:
+        query['market_value_number'] = {}
+        if mv_max:
+            query['market_value_number']['$lte'] = mv_max
+        if mv_min:
+            query['market_value_number']['$gte'] = mv_min
+
+    # foot
+    foot = filters.get('foot')
+    if foot:
+        query['foot'] = {'$in': foot}
+
+    with get_client() as client:
+        db = client['transfermarkt']
+        table = db['players']
+        result = table.find(query)
+        return list(result)
+
+
+# def backfill_db():
+#     paths = [i for i in glob.glob(f'data/transfermarkt/competitions/*')]
+#     paths = list(chain(*[glob.glob(f'{i}/clubs/*') for i in paths]))
+#     print(paths)
+#     for path in paths:
+#         _, _, _, c_id, _, s_id = path.split('/')
+#         save_competition_players_to_db(c_id, s_id, log=True)
+#         time.sleep(5)
+
+field_name_values = {
+    'name': 'Name',
+    'age': 'Age',
+    'nationality': 'Nat.',
+    'club': 'Club',
+    'position': 'Pos.',
+    'market_value': 'MV',
+    'height': 'Height',
+    'joined': 'joined'
+}
+
+foot_codes = {
+    'B': 'both',
+    'L': 'left',
+    'R': 'right'
+}
+
+default_keys = ['name', 'age', 'nationality', 'club', 'position', 'market_value', 'height']
+
+def display_table(results, limit=None, keys=default_keys, sort='market_value_number', order=-1):    
+    table = PrettyTable()
+    field_names = [field_name_values[k] for k in keys] 
+    table.field_names = field_names
+
+    if sort:
+        results = sorted(results, key=lambda d: order * d[sort])
+
+    if limit:
+        results = results[0:limit]
+
+    for r in results:
+        if 'position' in keys:
+            r['position'] = position_codes[r['position']]
+
+        if 'height' in keys:
+            height_ft_in = r['height_ft_in']
+            feet, inches = height_ft_in
+            height_str = r['height']
+            height_str = f'{height_str} ({feet}\'{inches}\")'
+            r['height'] = height_str
+
+        if 'age' in keys:
+            years, months = r['age_relative']
+            age_str = years
+            if months != 0:
+                age_str = f'{age_str} ({months} months)'
+            r['age'] = age_str
+
+        if 'club' in keys:
+            if r['joined'] and str(r['joined']).startswith('On loan'):
+                joined_str = r['joined'].split('until')
+                club = r['club']
+                r['club'] = f'{club} ({joined_str[0].strip()})'
+        
+        table.add_row(itemgetter(*keys)(r))
+
+    for i in field_names:
+        table.align[i] = 'l'
+
+    return table
+
+# country_codes = {
+#     'France': 'FR',
+#     'Algeria': 'DZ'
+#     ''
+# }
+
+def country_to_emoji(country_code):
+    # Base Unicode point for regional indicator symbols
+    base = ord('🇦')
+    
+    # Calculate the Unicode points for the country code
+    flag = ''.join(chr(base + ord(letter) - ord('A')) for letter in country_code.upper())
+    
+    return flag
+
+
+if __name__ == '__main__':
+    q_both = search(mv_max=25000000, age_max=22, foot=['both'])
+    table = display_table(q_both, limit=20)
