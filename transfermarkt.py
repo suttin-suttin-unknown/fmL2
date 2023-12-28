@@ -1,10 +1,8 @@
 from shared import convert_price_string, convert_value
 
-import csv
 import glob
 import json
 import os
-import time
 from datetime import datetime
 from itertools import chain
 from operator import itemgetter
@@ -17,8 +15,8 @@ from pymongo import MongoClient
 main_root = 'data'
 main_wd = f'{main_root}/transfermarkt'
 
-test_root = 'data2'
-test_wd = f'{test_root}/transfermarkt'
+# test_root = 'data2'
+# test_wd = f'{test_root}/transfermarkt'
 
 competition_ids = {
     'Albania': ['ALB1', 'ALB2'],
@@ -98,7 +96,7 @@ competition_ids = {
     'Oman': ['OM1L'],
     'Panama': ['PN1C'],
     'Paraguay': ['PR1C'],
-    'Peru': ['TDeC'],
+    'Peru': ['TDeC', 'PER2'],
     'Poland': ['PL1', 'PL2', 'PL2L'],
     'Portugal': ['PO1', 'PO2', 'PT3A'],
     'Romania': ['RO1', 'RO2'],
@@ -130,11 +128,15 @@ competition_ids = {
     'Wales': ['WAL1']
 }
 
+
+
+
 position_codes = {
     'Attacking Midfield': 'AM',
     'Central Midfield': 'CM',
     'Centre-Back': 'CB',
     'Centre-Forward': 'CF',
+    'Defender': 'D',
     'Defensive Midfield': 'DM',
     'Goalkeeper': 'GK',
     'Left Midfield': 'LM',
@@ -145,7 +147,8 @@ position_codes = {
     'Right Winger': 'RW',
     'Right-Back': 'RB',
     'Second Striker': 'SS',
-    'Striker': 'ST'
+    'Striker': 'ST',
+    'Sweeper': 'SW'
 }
 
 subregion_codes = {
@@ -372,7 +375,25 @@ def save_competition_players_to_db(competition_id, season_id, log=False):
             table.insert_many(players)
 
 
-def search(**filters):
+def get_club_names_for_country(country, tier=1):
+    code = competition_ids[country][tier - 1]
+    path = glob.glob(f'{main_wd}/competitions/{code}/clubs/*')[0]
+    season = os.path.split(path)[-1]
+    clubs = get_competition_clubs(code, season)
+    return [i['name'] for i in clubs['clubs']]
+
+
+def get_all_clubs_for_country(country):
+    codes = competition_ids[country]
+    leagues = []
+    for i in range(len(codes)):
+        leagues.extend(get_club_names_for_country(country, i))
+    return leagues
+    
+
+
+
+def search(sort_by=('market_value_number', -1), limit=None, **filters):
     query = {}
 
     # age
@@ -400,21 +421,31 @@ def search(**filters):
     if foot:
         query['foot'] = {'$in': foot}
 
+    #positions
+    positions = filters.get('positions')
+    if positions:
+        codes = dict((v, k) for k, v in position_codes.items())
+        positions = [codes[i] for i in positions]
+        query['position'] = {'$in': positions}
+
+    clubs = filters.get('clubs')
+    if clubs:
+        query['club'] = {'$in': clubs}
+
+
     with get_client() as client:
         db = client['transfermarkt']
         table = db['players']
         result = table.find(query)
+
+        if limit:
+            result = result.limit(limit)
+
+        if sort_by:
+            result = result.sort(*sort_by)
+
         return list(result)
 
-
-# def backfill_db():
-#     paths = [i for i in glob.glob(f'data/transfermarkt/competitions/*')]
-#     paths = list(chain(*[glob.glob(f'{i}/clubs/*') for i in paths]))
-#     print(paths)
-#     for path in paths:
-#         _, _, _, c_id, _, s_id = path.split('/')
-#         save_competition_players_to_db(c_id, s_id, log=True)
-#         time.sleep(5)
 
 field_name_values = {
     'name': 'Name',
@@ -424,7 +455,8 @@ field_name_values = {
     'position': 'Pos.',
     'market_value': 'MV',
     'height': 'Height',
-    'joined': 'joined'
+    'joined': 'joined',
+    'foot': 'foot'
 }
 
 foot_codes = {
@@ -433,66 +465,45 @@ foot_codes = {
     'R': 'right'
 }
 
-default_keys = ['name', 'age', 'nationality', 'club', 'position', 'market_value', 'height']
+default_keys = ['name', 'age', 'position', 'nationality', 'club', 'market_value', 'height', 'foot']
 
-def display_table(results, limit=None, keys=default_keys, sort='market_value_number', order=-1):    
+
+
+def display_table(results, keys=default_keys, include_loan=False):    
     table = PrettyTable()
     field_names = [field_name_values[k] for k in keys] 
     table.field_names = field_names
-
-    if sort:
-        results = sorted(results, key=lambda d: order * d[sort])
-
-    if limit:
-        results = results[0:limit]
 
     for r in results:
         if 'position' in keys:
             r['position'] = position_codes[r['position']]
 
         if 'height' in keys:
-            height_ft_in = r['height_ft_in']
-            feet, inches = height_ft_in
-            height_str = r['height']
-            height_str = f'{height_str} ({feet}\'{inches}\")'
-            r['height'] = height_str
+            if height_ft_in := r.get('height_ft_in'):
+                feet, inches = height_ft_in
+                height_str = r['height']
+                height_str = f'{height_str} ({feet}\'{inches}\")'
+                r['height'] = height_str
 
         if 'age' in keys:
-            years, months = r['age_relative']
-            age_str = years
-            if months != 0:
-                age_str = f'{age_str} ({months} months)'
-            r['age'] = age_str
+            if age_relative := r.get('age_relative'):
+                years, months = age_relative
+                age_str = years
+                if months != 0:
+                    age_str = f'{age_str} y ({months} m)'
+                r['age'] = age_str
 
         if 'club' in keys:
-            if r['joined'] and str(r['joined']).startswith('On loan'):
-                joined_str = r['joined'].split('until')
-                club = r['club']
-                r['club'] = f'{club} ({joined_str[0].strip()})'
-        
-        table.add_row(itemgetter(*keys)(r))
+            if include_loan:
+                if r['joined'] and str(r['joined']).startswith('On loan'):
+                    joined_str = r['joined'].split('until')
+                    club = r['club']
+                    r['club'] = f'{club} ({joined_str[0].strip()})'
+
+        table.add_row([r.get(k) for k in keys])
 
     for i in field_names:
         table.align[i] = 'l'
 
     return table
 
-# country_codes = {
-#     'France': 'FR',
-#     'Algeria': 'DZ'
-#     ''
-# }
-
-def country_to_emoji(country_code):
-    # Base Unicode point for regional indicator symbols
-    base = ord('🇦')
-    
-    # Calculate the Unicode points for the country code
-    flag = ''.join(chr(base + ord(letter) - ord('A')) for letter in country_code.upper())
-    
-    return flag
-
-
-if __name__ == '__main__':
-    q_both = search(mv_max=25000000, age_max=22, foot=['both'])
-    table = display_table(q_both, limit=20)
