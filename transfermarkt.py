@@ -52,48 +52,59 @@ class API:
         return response.json()
 
 
-def get_competition_clubs(competition_id, season_id):
-    path = f'{main_wd}/competitions/{competition_id}/clubs/{season_id}'
-    if os.path.exists(path):
-        with open(path) as f:
-            return json.load(f)
-        
-    clubs = API().get_competition_clubs(competition_id, season_id)
-    os.makedirs(os.path.split(path)[0], exist_ok=True)
-    with open(path, 'w') as f:
-        json.dump(clubs, f)
+class Competition:
+    def __init__(self, id, season):
+        self.id = id
+        self.season = season
 
-    return clubs
+    def get_clubs(self):
+        path = f'{main_wd}/competitions/{self.id}/clubs/{self.season}'
+        if os.path.exists(path):
+            with open(path) as f:
+                return json.load(f)
+            
+        clubs = API().get_competition_clubs(self.id, self.season)
+        os.makedirs(os.path.split(path)[0], exist_ok=True)
+        with open(path, 'w') as f:
+            json.dump(clubs, f)
+
+        return clubs
+    
+    def get_players(self, update=False):
+        clubs = self.get_clubs()
+        for c in clubs['clubs']:
+            id = c['id']
+            name = c['name']
+            club = Club(id, self.season)
+            players = club.get_players(update=update)
+            for player in players.get('players', []):
+                yield Player(**{'club': name, **player})
 
 
-def get_club_players(club_id, season_id, update=False):
-    path = f'{main_wd}/clubs/{club_id}/players/{season_id}'
-    if os.path.exists(path) and not update:
-        with open(path) as f:
-            return json.load(f)
-        
-    players = API().get_club_players(club_id, season_id)
-    os.makedirs(os.path.split(path)[0], exist_ok=True)
-    with open(path, 'w') as f:
-        json.dump(players, f)
 
-    return players
+class Club:
+    def __init__(self, id, season):
+        self.id = id
+        self.season = season
 
+    def get_players(self, update=False):
+        path = f'{main_wd}/clubs/{self.id}/players/{self.season}'
+        if os.path.exists(path) and not update:
+            with open(path) as f:
+                return json.load(f)
+            
+        players = API().get_club_players(self.id, self.season)
+        os.makedirs(os.path.split(path)[0], exist_ok=True)
+        with open(path, 'w') as f:
+            json.dump(players, f)
 
-def get_all_club_players(competition_id, season_id, update=False, log=False):
-    clubs = get_competition_clubs(competition_id, season_id)['clubs']
-    for club in clubs:
-        id, name = itemgetter('id', 'name')(club)
-        if log:
-            print(f'Getting players for {id} ({name})')
-        yield get_club_players(club['id'], season_id, update=update)
+        return players
 
 
 class Player:
     def __init__(self, **club_entry):
         self.id = club_entry.get('id')
         self.name = club_entry.get('name')
-        self.age = club_entry.get('age')
         self.club = club_entry.get('club')
         self.contract = club_entry.get('contract')
         self.date_of_birth = club_entry.get('dateOfBirth')
@@ -178,6 +189,7 @@ class Player:
             'signed_from': self.signed_from,
             'status': self.status
         }
+
         if self.age_relative:
             info['age'] = self.age_relative[0]
 
@@ -279,6 +291,7 @@ def search(sort_by=('market_value_number', -1), limit=None, **filters):
         positions = [codes[i] for i in positions]
         query['position'] = {'$in': positions}
 
+    # clubs
     clubs = filters.get('clubs')
     if clubs:
         query['club'] = {'$in': clubs}
@@ -298,17 +311,6 @@ def search(sort_by=('market_value_number', -1), limit=None, **filters):
         return list(result)
 
 
-def group_results(results, group_by='age'):
-    groups = {}
-    if group_by == 'age':
-        for r in results:
-            ar = r['age_relative']
-            if groups.get(ar[0]):
-                groups[ar[0]].append(r)
-            else:
-                groups[ar[0]] = [r]
-
-    return groups
 
 
 def partition_by_age(results):
@@ -334,6 +336,29 @@ def partition_by_market_value(results):
         p_r = partitions[n + 1]
         yield [i for i in marked if p_r < i[key] <= p_l]
 
+    if unmarked:
+        yield unmarked
+
+
+def partition_by_club(results):
+    key = 'club'
+    marked = [i for i in results if i.get(key)]
+    unmarked = [i for i in results if not i.get(key)]
+    partitions = sorted({i[key] for i in marked})
+    for p in partitions:
+        yield [i for i in marked if i[key] == p]
+
+    if unmarked:
+        yield unmarked
+
+def partition_by_nationality(results):
+    key = 'nationality'
+    marked = [i for i in results if i.get(key)]
+    unmarked = [i for i in results if not i.get(key)]
+    partitions = sorted({i[key] for i in marked})
+    for p in partitions:
+        yield [i for i in marked if i[key] == p]
+    
     if unmarked:
         yield unmarked
 
@@ -397,4 +422,3 @@ def display_table(results, keys=default_keys, include_loan=False):
         table.align[i] = 'l'
 
     return table
-
