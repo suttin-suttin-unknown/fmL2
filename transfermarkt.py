@@ -1,8 +1,10 @@
-from shared import convert_price_string, convert_value
+import codes
+from shared import convert_price_string
 
 import glob
 import json
 import os
+import statistics
 from datetime import datetime
 from itertools import chain
 from operator import itemgetter
@@ -15,158 +17,9 @@ from pymongo import MongoClient
 main_root = 'data'
 main_wd = f'{main_root}/transfermarkt'
 
-# test_root = 'data2'
-# test_wd = f'{test_root}/transfermarkt'
-
-competition_ids = {
-    'Albania': ['ALB1', 'ALB2'],
-    'Algeria': ['ALG1'],
-    'Andorra': ['AND1', 'AND2'],
-    'Angola': ['AN1L'],
-    'Argentina': ['AR1N', 'ARG2', 'ARG3'],
-    'Armenia': ['ARM1', 'ARM2'],
-    'Australia': ['AUS1', 'A2SW', 'A2VI'],
-    'Austria': ['A1', 'A2'],
-    'Azerbaijan': ['AZ1'],
-    'Bangladesh': ['BGD1'],
-    'Belgium': ['BE1', 'BE2'],
-    'Belarus': ['WER1'],
-    'Bolivia': ['BO1A'],
-    'Brazil': ['BRA1', 'BRA2'],
-    'Bosnia-Herzegovina': ['BOS1'],
-    'Bulgaria': ['BU1', 'BU2'],
-    'Canada': ['CDN1'],
-    'Cambodia': ['KHM1'],
-    'Chile': ['CLPD', 'CL2B'],
-    'China': ['CSL'],
-    'Colombia': ['COL1'],
-    'Costa Rica': ['CRPD'],
-    'Croatia': ['KR1'],
-    'Cyprus': ['ZYP1'],
-    'Czech Republic': ['TS1', 'TS2'],
-    'Denmark': ['DK1', 'DK2'],
-    'Ecuador': ['EL1S'],
-    'Egypt': ['EGY1'],
-    'El Salvador': ['SL1A'],
-    'England': ['GB1', 'GB2', 'GB3', 'GB4'],
-    'Faroe Islands': ['FARO'],
-    'Fiji': ['FIJ1'],
-    'Finland': ['FI1'],
-    'France': ['FR1', 'FR2', 'FR3'],
-    'Germany': ['L1', 'L2', 'L3'],
-    'Ghana': ['GHPL'],
-    'Gibraltar': ['GI1'],
-    'Greece': ['GR1', 'GRS2'],
-    'Georgia': ['GE1N'],
-    'Guatemala': ['GU1A'],
-    'Honduras': ['HO1A'],
-    'Hong Kong': ['HGKG'],
-    'Hungary': ['UNG1'],
-    'Iceland': ['IS1'],
-    'India': ['IND1'],
-    'Indonesia': ['IN1L'],
-    'Iran': ['IRN1'],
-    'Ireland': ['IR1', 'IR2'],
-    'Israel': ['ISR1', 'ISR2'],
-    'Italy': ['IT1', 'IT2'],
-    'Jamaica': ['JPL1'],
-    'Japan': ['JAP1', 'JAP2', 'JAP3'],
-    'Kazakhstan': ['KAS1'],
-    'Kosovo': ['KO1'],
-    'Kyrgyzstan': ['KG1L'],
-    'Laos': ['LAO1'],
-    'Latvia': ['LET1'],
-    'Lithuania': ['LI1'],
-    'Luxembourg': ['LUX1'],
-    'Macedonia': ['MAZ1'],
-    'Malaysia': ['MYS1'],
-    'Malta': ['MAL1'],
-    'Mexico': ['MEXA', 'MEX2'],
-    'Montenegro': ['MNE1'],
-    'Moldova': ['MO1N'],
-    'Morocco': ['MAR1'],
-    'Mozambique': ['MO1L'],
-    'Myanmar': ['MYA1'],
-    'Netherlands': ['NL1', 'NL2'],
-    'New Zealand': ['NZNL'],
-    'Nicaragua': ['NC1A'],
-    'Nigeria': ['NPFL'],
-    'Northern Ireland': ['NIR1'],
-    'Norway': ['NO1', 'NO2'],
-    'Oman': ['OM1L'],
-    'Panama': ['PN1C'],
-    'Paraguay': ['PR1C'],
-    'Peru': ['TDeC', 'PER2'],
-    'Poland': ['PL1', 'PL2', 'PL2L'],
-    'Portugal': ['PO1', 'PO2', 'PT3A'],
-    'Romania': ['RO1', 'RO2'],
-    'Russia': ['RU1', 'RU2'],
-    'San Marino': ['SMR1'],
-    'Saudi Arabia': ['SA1'],
-    'Scotland': ['SC1', 'SC2'],
-    'Serbia': ['SER1'],
-    'Singapore': ['SIN1'],
-    'Slovakia': ['SLO1', 'SK2'],
-    'Slovenia': ['SL1'],
-    'South Africa': ['SFA1'],
-    'South Korea': ['RSK1', 'RSK2'],
-    'Spain': ['ES1', 'ES2', 'E3G2', 'E3G1'],
-    'Sweden': ['SE1', 'SE2', 'SE3N', 'SE3S'],
-    'Switzerland': ['C1', 'C2'],
-    'Taiwan': ['TFPL'],
-    'Tajikistan': ['TAD1'],
-    'Thailand': ['THA1'],
-    'Tunisia': ['TUN1'],
-    'Turkey': ['TR1', 'TR2'],
-    'UAE': ['UAE1'],
-    'Ukraine': ['UKR1', 'UKR2'],
-    'United States': ['MLS1', 'USL', 'USC3'],
-    'Uruguay': ['URU1', 'URU2'],
-    'Uzbekistan': ['UZ1'],
-    'Venezuela': ['VZ1L', 'VN2C'],
-    'Vietnam': ['VIE1'],
-    'Wales': ['WAL1']
-}
-
-
-
-
-position_codes = {
-    'Attacking Midfield': 'AM',
-    'Central Midfield': 'CM',
-    'Centre-Back': 'CB',
-    'Centre-Forward': 'CF',
-    'Defender': 'D',
-    'Defensive Midfield': 'DM',
-    'Goalkeeper': 'GK',
-    'Left Midfield': 'LM',
-    'Left Winger': 'LW',
-    'Left-Back': 'LB',
-    'Mittelfeld': 'M',
-    'Right Midfield': 'RM',
-    'Right Winger': 'RW',
-    'Right-Back': 'RB',
-    'Second Striker': 'SS',
-    'Striker': 'ST',
-    'Sweeper': 'SW'
-}
-
-subregion_codes = {
-    'C-EU': 'Central Europe',
-    'E-EU': 'Eastern Europe',
-    'N-EU': 'Northern Europe',
-    'S-EU': 'Southern Europe',
-    'SE-EU': 'Southeast Europe',
-    'W-EU': 'Western Europe'
-}
 
 def get_client():
     return MongoClient('localhost', 27017)
-
-
-# def get_db():
-#     client = MongoClient('localhost', 27017)
-#     return client['transfermarkt']
 
 
 class API:
@@ -376,7 +229,7 @@ def save_competition_players_to_db(competition_id, season_id, log=False):
 
 
 def get_club_names_for_country(country, tier=1):
-    code = competition_ids[country][tier - 1]
+    code = codes.competition_ids[country][tier - 1]
     path = glob.glob(f'{main_wd}/competitions/{code}/clubs/*')[0]
     season = os.path.split(path)[-1]
     clubs = get_competition_clubs(code, season)
@@ -384,14 +237,12 @@ def get_club_names_for_country(country, tier=1):
 
 
 def get_all_clubs_for_country(country):
-    codes = competition_ids[country]
+    country_codes = codes.competition_ids[country]
     leagues = []
-    for i in range(len(codes)):
+    for i in range(len(country_codes)):
         leagues.extend(get_club_names_for_country(country, i))
     return leagues
     
-
-
 
 def search(sort_by=('market_value_number', -1), limit=None, **filters):
     query = {}
@@ -424,7 +275,7 @@ def search(sort_by=('market_value_number', -1), limit=None, **filters):
     #positions
     positions = filters.get('positions')
     if positions:
-        codes = dict((v, k) for k, v in position_codes.items())
+        codes = dict((v, k) for k, v in codes.positions.items())
         positions = [codes[i] for i in positions]
         query['position'] = {'$in': positions}
 
@@ -445,6 +296,46 @@ def search(sort_by=('market_value_number', -1), limit=None, **filters):
             result = result.sort(*sort_by)
 
         return list(result)
+
+
+def group_results(results, group_by='age'):
+    groups = {}
+    if group_by == 'age':
+        for r in results:
+            ar = r['age_relative']
+            if groups.get(ar[0]):
+                groups[ar[0]].append(r)
+            else:
+                groups[ar[0]] = [r]
+
+    return groups
+
+
+def partition_by_age(results):
+    key = 'date_of_birth'
+    marked = [i for i in results if i.get(key)]
+    unmarked = [i for i in results if not i.get(key)]
+    partitions = sorted({datetime.strptime(i[key], '%b %d, %Y').year for i in results}, reverse=True)
+    for p in partitions:
+        yield [i for i in marked if datetime.strptime(i[key], '%b %d, %Y').year == p]
+
+    if unmarked:
+        yield unmarked
+
+
+def partition_by_market_value(results):
+    key = 'market_value_number'
+    marked = [i for i in results if i.get(key)]
+    unmarked = [i for i in results if not i.get(key)]
+    values = [i[key] for i in marked]
+    partitions = [max(values), statistics.mean(values), statistics.harmonic_mean(values), min(values), 0]
+    for n in range(len(partitions) - 1):
+        p_l = partitions[n]
+        p_r = partitions[n + 1]
+        yield [i for i in marked if p_r < i[key] <= p_l]
+
+    if unmarked:
+        yield unmarked
 
 
 field_name_values = {
@@ -476,7 +367,7 @@ def display_table(results, keys=default_keys, include_loan=False):
 
     for r in results:
         if 'position' in keys:
-            r['position'] = position_codes[r['position']]
+            r['position'] = codes.positions[r['position']]
 
         if 'height' in keys:
             if height_ft_in := r.get('height_ft_in'):
@@ -490,7 +381,7 @@ def display_table(results, keys=default_keys, include_loan=False):
                 years, months = age_relative
                 age_str = years
                 if months != 0:
-                    age_str = f'{age_str} y ({months} m)'
+                    age_str = f'{age_str} ({months})'
                 r['age'] = age_str
 
         if 'club' in keys:
@@ -500,7 +391,7 @@ def display_table(results, keys=default_keys, include_loan=False):
                     club = r['club']
                     r['club'] = f'{club} ({joined_str[0].strip()})'
 
-        table.add_row([r.get(k) for k in keys])
+        table.add_row([r.get(k) or '-' for k in keys])
 
     for i in field_names:
         table.align[i] = 'l'

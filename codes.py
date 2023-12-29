@@ -1,3 +1,114 @@
+competition_ids = {
+    'Albania': ['ALB1', 'ALB2'],
+    'Algeria': ['ALG1'],
+    'Andorra': ['AND1', 'AND2'],
+    'Angola': ['AN1L'],
+    'Argentina': ['AR1N', 'ARG2', 'ARG3'],
+    'Armenia': ['ARM1', 'ARM2'],
+    'Australia': ['AUS1', 'A2SW', 'A2VI'],
+    'Austria': ['A1', 'A2'],
+    'Azerbaijan': ['AZ1'],
+    'Bangladesh': ['BGD1'],
+    'Belgium': ['BE1', 'BE2'],
+    'Belarus': ['WER1'],
+    'Bolivia': ['BO1A'],
+    'Brazil': ['BRA1', 'BRA2'],
+    'Bosnia-Herzegovina': ['BOS1'],
+    'Bulgaria': ['BU1', 'BU2'],
+    'Canada': ['CDN1'],
+    'Cambodia': ['KHM1'],
+    'Chile': ['CLPD', 'CL2B'],
+    'China': ['CSL'],
+    'Colombia': ['COL1'],
+    'Costa Rica': ['CRPD'],
+    'Croatia': ['KR1'],
+    'Cyprus': ['ZYP1'],
+    'Czech Republic': ['TS1', 'TS2'],
+    'Denmark': ['DK1', 'DK2'],
+    'Ecuador': ['EL1S'],
+    'Egypt': ['EGY1'],
+    'El Salvador': ['SL1A'],
+    'England': ['GB1', 'GB2', 'GB3', 'GB4'],
+    'Faroe Islands': ['FARO'],
+    'Fiji': ['FIJ1'],
+    'Finland': ['FI1'],
+    'France': ['FR1', 'FR2', 'FR3'],
+    'Germany': ['L1', 'L2', 'L3'],
+    'Ghana': ['GHPL'],
+    'Gibraltar': ['GI1'],
+    'Greece': ['GR1', 'GRS2'],
+    'Georgia': ['GE1N'],
+    'Guatemala': ['GU1A'],
+    'Honduras': ['HO1A'],
+    'Hong Kong': ['HGKG'],
+    'Hungary': ['UNG1'],
+    'Iceland': ['IS1'],
+    'India': ['IND1'],
+    'Indonesia': ['IN1L'],
+    'Iran': ['IRN1'],
+    'Ireland': ['IR1', 'IR2'],
+    'Israel': ['ISR1', 'ISR2'],
+    'Italy': ['IT1', 'IT2'],
+    'Jamaica': ['JPL1'],
+    'Japan': ['JAP1', 'JAP2', 'JAP3'],
+    'Kazakhstan': ['KAS1'],
+    'Kosovo': ['KO1'],
+    'Kyrgyzstan': ['KG1L'],
+    'Laos': ['LAO1'],
+    'Latvia': ['LET1'],
+    'Lithuania': ['LI1'],
+    'Luxembourg': ['LUX1'],
+    'Macedonia': ['MAZ1'],
+    'Malaysia': ['MYS1'],
+    'Malta': ['MAL1'],
+    'Mexico': ['MEXA', 'MEX2'],
+    'Montenegro': ['MNE1'],
+    'Moldova': ['MO1N'],
+    'Morocco': ['MAR1'],
+    'Mozambique': ['MO1L'],
+    'Myanmar': ['MYA1'],
+    'Netherlands': ['NL1', 'NL2'],
+    'New Zealand': ['NZNL'],
+    'Nicaragua': ['NC1A'],
+    'Nigeria': ['NPFL'],
+    'Northern Ireland': ['NIR1'],
+    'Norway': ['NO1', 'NO2'],
+    'Oman': ['OM1L'],
+    'Panama': ['PN1C'],
+    'Paraguay': ['PR1C'],
+    'Peru': ['TDeC', 'PER2'],
+    'Poland': ['PL1', 'PL2', 'PL2L'],
+    'Portugal': ['PO1', 'PO2', 'PT3A'],
+    'Romania': ['RO1', 'RO2'],
+    'Russia': ['RU1', 'RU2'],
+    'San Marino': ['SMR1'],
+    'Saudi Arabia': ['SA1'],
+    'Scotland': ['SC1', 'SC2'],
+    'Serbia': ['SER1'],
+    'Singapore': ['SIN1'],
+    'Slovakia': ['SLO1', 'SK2'],
+    'Slovenia': ['SL1'],
+    'South Africa': ['SFA1'],
+    'South Korea': ['RSK1', 'RSK2'],
+    'Spain': ['ES1', 'ES2', 'E3G2', 'E3G1'],
+    'Sweden': ['SE1', 'SE2', 'SE3N', 'SE3S'],
+    'Switzerland': ['C1', 'C2'],
+    'Taiwan': ['TFPL'],
+    'Tajikistan': ['TAD1'],
+    'Thailand': ['THA1'],
+    'Tunisia': ['TUN1'],
+    'Turkey': ['TR1', 'TR2'],
+    'UAE': ['UAE1'],
+    'Ukraine': ['UKR1', 'UKR2'],
+    'United States': ['MLS1', 'USL', 'USC3'],
+    'Uruguay': ['URU1', 'URU2'],
+    'Uzbekistan': ['UZ1'],
+    'Venezuela': ['VZ1L', 'VN2C'],
+    'Vietnam': ['VIE1'],
+    'Wales': ['WAL1']
+}
+
+
 UEFA = {
     'Albania': 'ALB',
     'Andorra': 'AND',
@@ -57,6 +168,16 @@ UEFA = {
 }
 
 
+subregions = {
+    'C-EU': 'Central Europe',
+    'E-EU': 'Eastern Europe',
+    'N-EU': 'Northern Europe',
+    'S-EU': 'Southern Europe',
+    'SE-EU': 'Southeast Europe',
+    'W-EU': 'Western Europe'
+}
+
+
 CONMEBOL = {
     'Argentina': 'ARG',
     'Bolivia': 'BOL',
@@ -69,6 +190,7 @@ CONMEBOL = {
     'Uruguay': 'URU',
     'Venezuela': 'VEN'
 }
+
 
 CONCACAF = {
     # North American Zone (NAFU)
@@ -118,7 +240,6 @@ CONCACAF = {
     'Turks and Caicos Islands': 'TCA',
     'U.S. Virgin Islands': 'VIR'
 }
-
 
 
 ACF = {
@@ -178,6 +299,7 @@ ACF = {
     'United Arab Emirates': 'UAE',
     'Yemen': 'YEM'
 }
+
 
 CAF = {
     # Union of North African Football (UNAF)
@@ -249,6 +371,7 @@ CAF = {
     'Réunion': 'REU'
 }
 
+
 OCF = {
     'American Samoa': 'ASA',
     'Cook Islands': 'COK',
@@ -263,4 +386,24 @@ OCF = {
     'Tonga': 'TGA',
     'Tuvalu': 'TUV',
     'Vanuatu': 'VAN'
+}
+
+positions = {
+    'Attacking Midfield': 'AM',
+    'Central Midfield': 'CM',
+    'Centre-Back': 'CB',
+    'Centre-Forward': 'CF',
+    'Defender': 'D',
+    'Defensive Midfield': 'DM',
+    'Goalkeeper': 'GK',
+    'Left Midfield': 'LM',
+    'Left Winger': 'LW',
+    'Left-Back': 'LB',
+    'Mittelfeld': 'M',
+    'Right Midfield': 'RM',
+    'Right Winger': 'RW',
+    'Right-Back': 'RB',
+    'Second Striker': 'SS',
+    'Striker': 'ST',
+    'Sweeper': 'SW'
 }
