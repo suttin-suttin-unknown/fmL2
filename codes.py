@@ -5,7 +5,7 @@ competition_ids = {
     'Angola': ['AN1L'],
     'Argentina': ['AR1N', 'ARG2', 'ARG3'],
     'Armenia': ['ARM1', 'ARM2'],
-    'Australia': ['AUS1', 'A2SW', 'A2VI'],
+    'Australia': ['AUS1', ['A2SW', 'A2VI']],
     'Austria': ['A1', 'A2'],
     'Azerbaijan': ['AZ1'],
     'Bangladesh': ['BGD1'],
@@ -90,8 +90,8 @@ competition_ids = {
     'Slovenia': ['SL1'],
     'South Africa': ['SFA1'],
     'South Korea': ['RSK1', 'RSK2'],
-    'Spain': ['ES1', 'ES2', 'E3G2', 'E3G1'],
-    'Sweden': ['SE1', 'SE2', 'SE3N', 'SE3S'],
+    'Spain': ['ES1', 'ES2', ['E3G2', 'E3G1']],
+    'Sweden': ['SE1', 'SE2', ['SE3N', 'SE3S']],
     'Switzerland': ['C1', 'C2'],
     'Taiwan': ['TFPL'],
     'Tajikistan': ['TAD1'],
@@ -107,6 +107,36 @@ competition_ids = {
     'Vietnam': ['VIE1'],
     'Wales': ['WAL1']
 }
+
+youth_competition_ids = {
+    'Armenia': ['AR18'],
+    'Austria': ['JGD2', 'JGD3'],
+    'Brazil': ['CB20', 'SPjr'],
+    'Bosnia-Herzegovina': ['BI19', 'BI17'],
+    'Croatia': ['CR19'],
+    'Czech Republic': ['CZ19'],
+    'Denmark': ['DKDL', 'DKDD'],
+    'England': ['GB18'],
+    'Finland': ['FINJ'],
+    'France': ['F19A', 'F19B', 'F19C', 'F19D'],
+    'Germany': ['AJ2', 'AJ1', 'AJ3', 'BJ1', 'BJ2', 'BJ3'],
+    'Gibraltar': ['G17L'],
+    'Greece': ['GR20'],
+    'India': ['ID17'],
+    'International': ['CLIY'],
+    'Italy': ['IJ1', 'IJ2A', 'IJ2B', 'ITJ5', 'ITJ7', 'ITJ4', 'ITJ6'],
+    'Japan': ['J18W', 'J18E'],
+    'Mexico': ['M23A', 'M23L'],
+    'Netherlands': ['211F', '212F', '181F', '181S', '182F', '182S', 'NLBJ', 'NLVB'],
+    'Poland': ['PLZJ'],
+    'Portugal': ['PT23'],
+    'Russia': ['RUJL', 'RU16', 'RU17'],
+    'Serbia': ['SB19', 'SB17'],
+    'Slovakia': ['SK19'],
+    'Slovenia': ['SL19'],
+    'Switzerland': ['C191', 'CH17']
+}
+
 
 
 UEFA = {
