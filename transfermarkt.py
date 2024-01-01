@@ -1,5 +1,5 @@
 import codes
-from shared import convert_price_string
+import shared
 
 import glob
 import json
@@ -7,7 +7,6 @@ import os
 import statistics
 from datetime import datetime
 from itertools import chain
-from operator import itemgetter
 
 import requests
 from unidecode import unidecode
@@ -57,12 +56,17 @@ class Competition:
         self.id = id
         self.season = season
 
+    @property
+    def club_names(self):
+        return [i['name'] for i in self.get_clubs()['clubs']]
+
     def get_clubs(self):
         path = f'{main_wd}/competitions/{self.id}/clubs/{self.season}'
         if os.path.exists(path):
             with open(path) as f:
                 return json.load(f)
-            
+
+        print(f'Fetching clubs for {self.id} ({self.season})')  
         clubs = API().get_competition_clubs(self.id, self.season)
         os.makedirs(os.path.split(path)[0], exist_ok=True)
         with open(path, 'w') as f:
@@ -71,20 +75,58 @@ class Competition:
         return clubs
     
     def get_players(self, update=False):
-        clubs = self.get_clubs()
-        for c in clubs['clubs']:
+        clubs = self.get_clubs()['clubs']
+        for c in clubs:
             id = c['id']
             name = c['name']
-            club = Club(id, self.season)
+            club = Club(id, name, self.season)
             players = club.get_players(update=update)
             for player in players.get('players', []):
                 yield Player(**{'club': name, **player})
 
+    def save_players(self):
+        players = [i.as_dict() for i in self.get_players()]
+        with get_client() as client:
+            db = client['transfermarkt']
+            table = db['players']
+            ids = [i['id'] for i in players]
+            existing = {i['id'] for i in list(table.find({'id': {'$in': ids}}))}
+            if len(ids) != len(existing):
+                missing = set(ids) - existing
+                if len(missing) != 0:
+                    print(f'Saving {len(missing)} players')
+                    players = [i for i in players if i['id'] in missing]
+                    table.insert_many(players)
+                    
+    @classmethod
+    def from_id(cls, id):
+        path = glob.glob(f'{main_wd}/competitions/{id}/clubs/*')[0]
+        season = os.path.split(path)[-1]
+        return cls(id, season)
+
+    @staticmethod
+    def list_all():
+        full_list = []
+        for (country, competitions) in codes.competition_ids.items():
+            for tier, league in enumerate(competitions, start=1):
+                if isinstance(league, list):
+                    league = [Competition.from_id(i) for i in league]
+                    full_list.extend([{'country': country, 'tier': str(tier), 'id': i.id, 'season': i.season} for i in league])
+                else:
+                    league = Competition.from_id(league)
+                    full_list.append({'country': country, 'tier': str(tier), 'id': league.id, 'season': league.season})
+        
+        for (country, competitions) in codes.youth_competition_ids.items():
+            league = [Competition.from_id(i) for i in competitions]
+            full_list.extend({'country': country, 'tier': 'Youth', 'id': i.id, 'season': i.season} for i in league)
+        
+        return sorted(full_list, key=lambda d: d['country'])
 
 
 class Club:
-    def __init__(self, id, season):
+    def __init__(self, id, name, season):
         self.id = id
+        self.name = name
         self.season = season
 
     def get_players(self, update=False):
@@ -92,13 +134,26 @@ class Club:
         if os.path.exists(path) and not update:
             with open(path) as f:
                 return json.load(f)
-            
+        
+        print(f'Fetching players for {self.id} ({self.name})')
         players = API().get_club_players(self.id, self.season)
         os.makedirs(os.path.split(path)[0], exist_ok=True)
         with open(path, 'w') as f:
             json.dump(players, f)
 
         return players
+
+
+def get_years_and_months(date, until=None):
+    date = datetime.strptime(date, '%b %d, %Y')
+    if until is None:
+        until = datetime.now()
+    years = until.year - date.year
+    months = until.month - date.month
+    if until.day < date.day:
+        months -= 1
+    months = (months + 12) % 12
+    return years, months
 
 
 class Player:
@@ -134,20 +189,18 @@ class Player:
     @property
     def market_value_number(self):
         if self.market_value:
-            return convert_price_string(self.market_value)
+            return shared.convert_price_string(self.market_value)
     
     @property
     def age_relative(self):
         if self.date_of_birth:
-            dob = datetime.strptime(self.date_of_birth, '%b %d, %Y')
-            now = datetime.now()
-            years = now.year - dob.year
-            months = now.month - dob.month
-            if now.day < dob.day:
-                months -= 1
-            months = (months + 12) % 12
-            return years, months
-    
+            return get_years_and_months(self.date_of_birth)
+        
+    @property
+    def age(self):
+        if self.age_relative:
+            return self.age_relative[0]
+        
     @property
     def height_cm(self):
         if self.height:
@@ -171,7 +224,12 @@ class Player:
         if self.height_ft:
             hin = (self.height_ft % 1) * 12
             return int(self.height_ft), int(hin)
-    
+        
+    @property
+    def joined_on_relative(self):
+        if self.joined_on:
+            return get_years_and_months(self.joined_on)
+        
     def as_dict(self):
         info = {
             'id': self.id,
@@ -190,8 +248,8 @@ class Player:
             'status': self.status
         }
 
-        if self.age_relative:
-            info['age'] = self.age_relative[0]
+        if self.age:
+            info['age'] = self.age
 
         if self.name != self.name_decoded:
             info['name_decoded'] = self.name_decoded
@@ -217,43 +275,10 @@ class Player:
         if self.height_ft_in:
             info['height_ft_in'] = self.height_ft_in
 
+        if self.joined_on_relative:
+            info['joined_on_relative'] = self.joined_on_relative
+
         return info
-
-       
-def save_competition_players_to_db(competition_id, season_id, log=False):
-    clubs = get_competition_clubs(competition_id, season_id)['clubs']
-    clubs = dict((club['id'], club['name']) for club in clubs)
-    players = get_all_club_players(competition_id, season_id, log=log)
-    players = list(chain(*[[{'club': clubs[i['id']], **j} for j in i.get('players', [])] for i in players]))
-    players = [Player(**i).as_dict() for i in players]
-    with get_client() as client:
-        db = client['transfermarkt']
-        table = db['players']
-        player_ids = [i['id'] for i in players]
-        result = table.find({'id': {'$in': player_ids}})
-        player_ids = set(player_ids)
-        result_ids = {i['id'] for i in list(result)}
-        if len(player_ids) != len(result_ids):
-            missing_players = player_ids - result_ids
-            print(f'Saving {len(missing_players)} players')
-            players = [i for i in players if i['id'] in missing_players]
-            table.insert_many(players)
-
-
-def get_club_names_for_country(country, tier=1):
-    code = codes.competition_ids[country][tier - 1]
-    path = glob.glob(f'{main_wd}/competitions/{code}/clubs/*')[0]
-    season = os.path.split(path)[-1]
-    clubs = get_competition_clubs(code, season)
-    return [i['name'] for i in clubs['clubs']]
-
-
-def get_all_clubs_for_country(country):
-    country_codes = codes.competition_ids[country]
-    leagues = []
-    for i in range(len(country_codes)):
-        leagues.extend(get_club_names_for_country(country, i))
-    return leagues
     
 
 def search(sort_by=('market_value_number', -1), limit=None, **filters):
@@ -287,8 +312,8 @@ def search(sort_by=('market_value_number', -1), limit=None, **filters):
     #positions
     positions = filters.get('positions')
     if positions:
-        codes = dict((v, k) for k, v in codes.positions.items())
-        positions = [codes[i] for i in positions]
+        position_codes = dict((v, k) for k, v in codes.positions.items())
+        positions = [position_codes[i] for i in positions]
         query['position'] = {'$in': positions}
 
     # clubs
@@ -311,6 +336,12 @@ def search(sort_by=('market_value_number', -1), limit=None, **filters):
         return list(result)
 
 
+def search_by_country(country, tier=1):
+    id = codes.competition_ids[country][tier - 1]
+    path = glob.glob(f'{main_wd}/competitions/{id}/clubs/*')[0]
+    season = os.path.split(path)[-1]
+    clubs = Competition(id, season).club_names
+    return search(clubs=clubs)
 
 
 def partition_by_age(results):
