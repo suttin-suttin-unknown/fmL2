@@ -1,5 +1,4 @@
 config.ini
-*.json
 venv/
 data/
 data_copy/
