@@ -1,6 +1,6 @@
-def convert_price_string(i):
+def convert_price_string(ps):
     try:
-        value = i.strip('€')
+        value = ps.strip('€')
         suffix = value[-1]
         value = float(value[0:-1])
         if suffix == 'm':
@@ -8,5 +8,5 @@ def convert_price_string(i):
         elif suffix == 'k':
             value *= 1000
         return value
-    except ValueError:
-        return 0
+    except:
+        return None
