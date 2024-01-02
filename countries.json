@@ -1,0 +1,1907 @@
+[
+    {
+        "name": "Albania",
+        "transfermarkt_name": "Albania",
+        "code": "ALB",
+        "competitions": [
+            "ALB1",
+            "ALB2"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Andorra",
+        "transfermarkt_name": "Andorra",
+        "code": "AND",
+        "competitions": [
+            "AND1",
+            "AND2"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Armenia",
+        "transfermarkt_name": "Armenia",
+        "code": "ARM",
+        "competitions": [
+            "ARM1",
+            "ARM2"
+        ],
+        "youth_competitions": [
+            "AR18"
+        ]
+    },
+    {
+        "name": "Austria",
+        "transfermarkt_name": "Austria",
+        "code": "AUT",
+        "competitions": [
+            "A1",
+            "A2"
+        ],
+        "youth_competitions": [
+            "JGD2",
+            "JGD3"
+        ]
+    },
+    {
+        "name": "Azerbaijan",
+        "transfermarkt_name": "Azerbaijan",
+        "code": "AZE",
+        "competitions": [
+            "AZ1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Belarus",
+        "transfermarkt_name": "Belarus",
+        "code": "BLR",
+        "competitions": [
+            "WER1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Belgium",
+        "transfermarkt_name": "Belgium",
+        "code": "BEL",
+        "competitions": [
+            "BE1",
+            "BE2"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Bosnia-Herzegovina",
+        "transfermarkt_name": "Bosnia-Herzegovina",
+        "code": "BIH",
+        "competitions": [
+            "BOS1"
+        ],
+        "youth_competitions": [
+            "BI19",
+            "BI17"
+        ]
+    },
+    {
+        "name": "Bulgaria",
+        "transfermarkt_name": "Bulgaria",
+        "code": "BUL",
+        "competitions": [
+            "BU1",
+            "BU2"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Croatia",
+        "transfermarkt_name": "Croatia",
+        "code": "CRO",
+        "competitions": [
+            "KR1"
+        ],
+        "youth_competitions": [
+            "CR19"
+        ]
+    },
+    {
+        "name": "Cyprus",
+        "transfermarkt_name": "Cyprus",
+        "code": "CYP",
+        "competitions": [
+            "ZYP1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Czech Republic",
+        "transfermarkt_name": "Czech Republic",
+        "code": "CZE",
+        "competitions": [
+            "TS1",
+            "TS2"
+        ],
+        "youth_competitions": [
+            "CZ19"
+        ]
+    },
+    {
+        "name": "Denmark",
+        "transfermarkt_name": "Denmark",
+        "code": "DEN",
+        "competitions": [
+            "DK1",
+            "DK2"
+        ],
+        "youth_competitions": [
+            "DKDL",
+            "DKDD"
+        ]
+    },
+    {
+        "name": "England",
+        "transfermarkt_name": "England",
+        "code": "ENG",
+        "competitions": [
+            "GB1",
+            "GB2",
+            "GB3",
+            "GB4"
+        ],
+        "youth_competitions": [
+            "GB18"
+        ]
+    },
+    {
+        "name": "Estonia",
+        "transfermarkt_name": "Estonia",
+        "code": "EST",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Faroe Islands",
+        "transfermarkt_name": "Faroe Islands",
+        "code": "FRO",
+        "competitions": [
+            "FARO"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Finland",
+        "transfermarkt_name": "Finland",
+        "code": "FIN",
+        "competitions": [
+            "FI1"
+        ],
+        "youth_competitions": [
+            "FINJ"
+        ]
+    },
+    {
+        "name": "France",
+        "transfermarkt_name": "France",
+        "code": "FRA",
+        "competitions": [
+            "FR1",
+            "FR2",
+            "FR3"
+        ],
+        "youth_competitions": [
+            "F19A",
+            "F19B",
+            "F19C",
+            "F19D"
+        ]
+    },
+    {
+        "name": "Georgia",
+        "transfermarkt_name": "Georgia",
+        "code": "GEO",
+        "competitions": [
+            "GE1N"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Germany",
+        "transfermarkt_name": "Germany",
+        "code": "GER",
+        "competitions": [
+            "L1",
+            "L2",
+            "L3"
+        ],
+        "youth_competitions": [
+            "AJ2",
+            "AJ1",
+            "AJ3",
+            "BJ1",
+            "BJ2",
+            "BJ3"
+        ]
+    },
+    {
+        "name": "Gibraltar",
+        "transfermarkt_name": "Gibraltar",
+        "code": "GIB",
+        "competitions": [
+            "GI1"
+        ],
+        "youth_competitions": [
+            "G17L"
+        ]
+    },
+    {
+        "name": "Greece",
+        "transfermarkt_name": "Greece",
+        "code": "GRE",
+        "competitions": [
+            "GR1",
+            "GRS2"
+        ],
+        "youth_competitions": [
+            "GR20"
+        ]
+    },
+    {
+        "name": "Hungary",
+        "transfermarkt_name": "Hungary",
+        "code": "HUN",
+        "competitions": [
+            "UNG1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Iceland",
+        "transfermarkt_name": "Iceland",
+        "code": "ISL",
+        "competitions": [
+            "IS1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Israel",
+        "transfermarkt_name": "Israel",
+        "code": "ISR",
+        "competitions": [
+            "ISR1",
+            "ISR2"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Italy",
+        "transfermarkt_name": "Italy",
+        "code": "ITA",
+        "competitions": [
+            "IT1",
+            "IT2"
+        ],
+        "youth_competitions": [
+            "IJ1",
+            "IJ2A",
+            "IJ2B",
+            "ITJ5",
+            "ITJ7",
+            "ITJ4",
+            "ITJ6"
+        ]
+    },
+    {
+        "name": "Kazakhstan",
+        "transfermarkt_name": "Kazakhstan",
+        "code": "KAZ",
+        "competitions": [
+            "KAS1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Kosovo",
+        "transfermarkt_name": "Kosovo",
+        "code": "KOS",
+        "competitions": [
+            "KO1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Latvia",
+        "transfermarkt_name": "Latvia",
+        "code": "LVA",
+        "competitions": [
+            "LET1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Liechtenstein",
+        "transfermarkt_name": "Liechtenstein",
+        "code": "LIE",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Lithuania",
+        "transfermarkt_name": "Lithuania",
+        "code": "LTU",
+        "competitions": [
+            "LI1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Luxembourg",
+        "transfermarkt_name": "Luxembourg",
+        "code": "LUX",
+        "competitions": [
+            "LUX1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Malta",
+        "transfermarkt_name": "Malta",
+        "code": "MLT",
+        "competitions": [
+            "MAL1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Moldova",
+        "transfermarkt_name": "Moldova",
+        "code": "MDA",
+        "competitions": [
+            "MO1N"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Montenegro",
+        "transfermarkt_name": "Montenegro",
+        "code": "MNE",
+        "competitions": [
+            "MNE1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Netherlands",
+        "transfermarkt_name": "Netherlands",
+        "code": "NED",
+        "competitions": [
+            "NL1",
+            "NL2"
+        ],
+        "youth_competitions": [
+            "211F",
+            "212F",
+            "181F",
+            "181S",
+            "182F",
+            "182S",
+            "NLBJ",
+            "NLVB"
+        ]
+    },
+    {
+        "name": "North Macedonia",
+        "transfermarkt_name": "North Macedonia",
+        "code": "MKD",
+        "competitions": [
+            "MAZ1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Northern Ireland",
+        "transfermarkt_name": "Northern Ireland",
+        "code": "NIR",
+        "competitions": [
+            "NIR1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Norway",
+        "transfermarkt_name": "Norway",
+        "code": "NOR",
+        "competitions": [
+            "NO1",
+            "NO2"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Poland",
+        "transfermarkt_name": "Poland",
+        "code": "POL",
+        "competitions": [
+            "PL1",
+            "PL2",
+            "PL2L"
+        ],
+        "youth_competitions": [
+            "PLZJ"
+        ]
+    },
+    {
+        "name": "Portugal",
+        "transfermarkt_name": "Portugal",
+        "code": "POR",
+        "competitions": [
+            "PO1",
+            "PO2",
+            "PT3A"
+        ],
+        "youth_competitions": [
+            "PT23"
+        ]
+    },
+    {
+        "name": "Republic Of Ireland",
+        "transfermarkt_name": "Ireland",
+        "code": "IRL",
+        "competitions": [
+            "IR1",
+            "IR2"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Romania",
+        "transfermarkt_name": "Romania",
+        "code": "ROU",
+        "competitions": [
+            "RO1",
+            "RO2"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Russia",
+        "transfermarkt_name": "Russia",
+        "code": "RUS",
+        "competitions": [
+            "RU1",
+            "RU2"
+        ],
+        "youth_competitions": [
+            "RUJL",
+            "RU16",
+            "RU17"
+        ]
+    },
+    {
+        "name": "San Marino",
+        "transfermarkt_name": "San Marino",
+        "code": "SMR",
+        "competitions": [
+            "SMR1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Scotland",
+        "transfermarkt_name": "Scotland",
+        "code": "SCO",
+        "competitions": [
+            "SC1",
+            "SC2"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Serbia",
+        "transfermarkt_name": "Serbia",
+        "code": "SRB",
+        "competitions": [
+            "SER1"
+        ],
+        "youth_competitions": [
+            "SB19",
+            "SB17"
+        ]
+    },
+    {
+        "name": "Slovakia",
+        "transfermarkt_name": "Slovakia",
+        "code": "SVK",
+        "competitions": [
+            "SLO1",
+            "SK2"
+        ],
+        "youth_competitions": [
+            "SK19"
+        ]
+    },
+    {
+        "name": "Slovenia",
+        "transfermarkt_name": "Slovenia",
+        "code": "SVN",
+        "competitions": [
+            "SL1"
+        ],
+        "youth_competitions": [
+            "SL19"
+        ]
+    },
+    {
+        "name": "Spain",
+        "transfermarkt_name": "Spain",
+        "code": "ESP",
+        "competitions": [
+            "ES1",
+            "ES2",
+            [
+                "E3G2",
+                "E3G1"
+            ]
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Sweden",
+        "transfermarkt_name": "Sweden",
+        "code": "SWE",
+        "competitions": [
+            "SE1",
+            "SE2",
+            [
+                "SE3N",
+                "SE3S"
+            ]
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Switzerland",
+        "transfermarkt_name": "Switzerland",
+        "code": "SUI",
+        "competitions": [
+            "C1",
+            "C2"
+        ],
+        "youth_competitions": [
+            "C191",
+            "CH17"
+        ]
+    },
+    {
+        "name": "Turkey",
+        "transfermarkt_name": "Turkey",
+        "code": "TUR",
+        "competitions": [
+            "TR1",
+            "TR2"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Ukraine",
+        "transfermarkt_name": "Ukraine",
+        "code": "UKR",
+        "competitions": [
+            "UKR1",
+            "UKR2"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Wales",
+        "transfermarkt_name": "Wales",
+        "code": "WAL",
+        "competitions": [
+            "WAL1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Argentina",
+        "transfermarkt_name": "Argentina",
+        "code": "ARG",
+        "competitions": [
+            "AR1N",
+            "ARG2",
+            "ARG3"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Bolivia",
+        "transfermarkt_name": "Bolivia",
+        "code": "BOL",
+        "competitions": [
+            "BO1A"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Brazil",
+        "transfermarkt_name": "Brazil",
+        "code": "BRA",
+        "competitions": [
+            "BRA1",
+            "BRA2"
+        ],
+        "youth_competitions": [
+            "CB20",
+            "SPjr"
+        ]
+    },
+    {
+        "name": "Chile",
+        "transfermarkt_name": "Chile",
+        "code": "CHI",
+        "competitions": [
+            "CLPD",
+            "CL2B"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Colombia",
+        "transfermarkt_name": "Colombia",
+        "code": "COL",
+        "competitions": [
+            "COL1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Ecuador",
+        "transfermarkt_name": "Ecuador",
+        "code": "ECU",
+        "competitions": [
+            "EL1S"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Paraguay",
+        "transfermarkt_name": "Paraguay",
+        "code": "PAR",
+        "competitions": [
+            "PR1C"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Peru",
+        "transfermarkt_name": "Peru",
+        "code": "PER",
+        "competitions": [
+            "TDeC",
+            "PER2"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Uruguay",
+        "transfermarkt_name": "Uruguay",
+        "code": "URU",
+        "competitions": [
+            "URU1",
+            "URU2"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Venezuela",
+        "transfermarkt_name": "Venezuela",
+        "code": "VEN",
+        "competitions": [
+            "VZ1L",
+            "VN2C"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Canada",
+        "transfermarkt_name": "Canada",
+        "code": "CAN",
+        "competitions": [
+            "CDN1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Mexico",
+        "transfermarkt_name": "Mexico",
+        "code": "Mex",
+        "competitions": [
+            "MEXA",
+            "MEX2"
+        ],
+        "youth_competitions": [
+            "M23A",
+            "M23L"
+        ]
+    },
+    {
+        "name": "United States",
+        "transfermarkt_name": "United States",
+        "code": "USA",
+        "competitions": [
+            "MLS1",
+            "USL",
+            "USC3"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Belize",
+        "transfermarkt_name": "Belize",
+        "code": "BLZ",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Costa Rica",
+        "transfermarkt_name": "Costa Rica",
+        "code": "CRC",
+        "competitions": [
+            "CRPD"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "El Salvador",
+        "transfermarkt_name": "El Salvador",
+        "code": "SLV",
+        "competitions": [
+            "SL1A"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Guatemala",
+        "transfermarkt_name": "Guatemala",
+        "code": "GUA",
+        "competitions": [
+            "GU1A"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Honduras",
+        "transfermarkt_name": "Honduras",
+        "code": "HON",
+        "competitions": [
+            "HO1A"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Nicaragua",
+        "transfermarkt_name": "Nicaragua",
+        "code": "NCA",
+        "competitions": [
+            "NC1A"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Panama",
+        "transfermarkt_name": "Panama",
+        "code": "PAN",
+        "competitions": [
+            "PN1C"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Anguilla",
+        "transfermarkt_name": "",
+        "code": "AIA",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Antigua and Barbuda",
+        "transfermarkt_name": "Antigua and Barbuda",
+        "code": "ATG",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Aruba",
+        "transfermarkt_name": "Aruba",
+        "code": "ARU",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Bahamas",
+        "transfermarkt_name": "Bahamas",
+        "code": "BAH",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Barbados",
+        "transfermarkt_name": "Barbados",
+        "code": "BRB",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Bermuda",
+        "transfermarkt_name": "Bermuda",
+        "code": "BER",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Bonaire",
+        "transfermarkt_name": "Bonaire",
+        "code": "BOE",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "British Virgin Islands",
+        "transfermarkt_name": "British Virgin Islands",
+        "code": "VGB",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Cayman Islands",
+        "transfermarkt_name": "Cayman Islands",
+        "code": "CAY",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Cuba",
+        "transfermarkt_name": "Cuba",
+        "code": "CUB",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Cura\u00e7ao",
+        "transfermarkt_name": "Curacao",
+        "code": "CUW",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Dominica",
+        "transfermarkt_name": "Dominica",
+        "code": "DMA",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Dominican Republic",
+        "transfermarkt_name": "Dominican Republic",
+        "code": "DOM",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "French Guiana",
+        "transfermarkt_name": "French Guiana",
+        "code": "GUF",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Grenada",
+        "transfermarkt_name": "Grenada",
+        "code": "GRN",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Guadeloupe",
+        "transfermarkt_name": "Guadeloupe",
+        "code": "GLP",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Guyana",
+        "transfermarkt_name": "Guyana",
+        "code": "GUY",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Haiti",
+        "transfermarkt_name": "Haiti",
+        "code": "HAI",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Jamaica",
+        "transfermarkt_name": "Jamaica",
+        "code": "JAM",
+        "competitions": [
+            "JPL1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Martinique",
+        "transfermarkt_name": "Martinique",
+        "code": "MTQ",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Montserrat",
+        "transfermarkt_name": "Montserrat",
+        "code": "MSR",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Puerto Rico",
+        "transfermarkt_name": "Puerto Rico",
+        "code": "PUR",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Saint Kitts and Nevis",
+        "transfermarkt_name": "St. Kitts & Nevis",
+        "code": "SKN",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Saint Lucia",
+        "transfermarkt_name": "St. Lucia",
+        "code": "LCA",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Saint Martin",
+        "transfermarkt_name": "",
+        "code": "SMN",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Saint Vincent and the Grenadines",
+        "transfermarkt_name": "St. Vincent & Grenadinen",
+        "code": "VIN",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Sint Maarten",
+        "transfermarkt_name": "Sint Maarten",
+        "code": "SMA",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Suriname",
+        "transfermarkt_name": "Suriname",
+        "code": "SUR",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Trinidad and Tobago",
+        "transfermarkt_name": "Trinidad and Tobago",
+        "code": "TRI",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Turks and Caicos Islands",
+        "transfermarkt_name": "Turks- and Caicosinseln",
+        "code": "TCA",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "U.S. Virgin Islands",
+        "transfermarkt_name": "",
+        "code": "VIR",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Australia",
+        "transfermarkt_name": "Australia",
+        "code": "AUS",
+        "competitions": [
+            "AUS1",
+            [
+                "A2SW",
+                "A2VI"
+            ]
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Brunei Darussalam",
+        "transfermarkt_name": "Brunei Darussalam",
+        "code": "BRU",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Cambodia",
+        "transfermarkt_name": "Cambodia",
+        "code": "CAM",
+        "competitions": [
+            "KHM1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Indonesia",
+        "transfermarkt_name": "Indonesia",
+        "code": "IDN",
+        "competitions": [
+            "IN1L"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Laos",
+        "transfermarkt_name": "Laos",
+        "code": "LAO",
+        "competitions": [
+            "LAO1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Malaysia",
+        "transfermarkt_name": "Malaysia",
+        "code": "MAS",
+        "competitions": [
+            "MYS1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Myanmar",
+        "transfermarkt_name": "Myanmar",
+        "code": "MYA",
+        "competitions": [
+            "MYA1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Philippines",
+        "transfermarkt_name": "Philippines",
+        "code": "PHI",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Singapore",
+        "transfermarkt_name": "Singapore",
+        "code": "SGP",
+        "competitions": [
+            "SIN1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Thailand",
+        "transfermarkt_name": "Thailand",
+        "code": "THA",
+        "competitions": [
+            "THA1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Timor-Leste",
+        "transfermarkt_name": "Timor-Leste",
+        "code": "TLS",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Vietnam",
+        "transfermarkt_name": "Vietnam",
+        "code": "VIE",
+        "competitions": [
+            "VIE1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Afghanistan",
+        "transfermarkt_name": "Afghanistan",
+        "code": "AFG",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Islamic Republic of Iran",
+        "transfermarkt_name": "Iran",
+        "code": "IRN",
+        "competitions": [
+            "IRN1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Kyrgyz Republic",
+        "transfermarkt_name": "Kyrgyzstan",
+        "code": "KGZ",
+        "competitions": [
+            "KG1L"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Tajikistan",
+        "transfermarkt_name": "Tajikistan",
+        "code": "TJK",
+        "competitions": [
+            "TAD1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Turkmenistan",
+        "transfermarkt_name": "Turkmenistan",
+        "code": "TKM",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Uzbekistan",
+        "transfermarkt_name": "Uzbekistan",
+        "code": "UZB",
+        "competitions": [
+            "UZ1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "China",
+        "transfermarkt_name": "China",
+        "code": "CHN",
+        "competitions": [
+            "CSL"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Chinese Taipei",
+        "transfermarkt_name": "Chinese Taipei",
+        "code": "TPE",
+        "competitions": [
+            "TFPL"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "DPR Korea",
+        "transfermarkt_name": "Korea, North",
+        "code": "PRK",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Guam",
+        "transfermarkt_name": "Guam",
+        "code": "GUM",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Hong Kong, China",
+        "transfermarkt_name": "Hongkong",
+        "code": "HKG",
+        "competitions": [
+            "HGKG"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Japan",
+        "transfermarkt_name": "Japan",
+        "code": "JPN",
+        "competitions": [
+            "JAP1",
+            "JAP2",
+            "JAP3"
+        ],
+        "youth_competitions": [
+            "J18W",
+            "J18E"
+        ]
+    },
+    {
+        "name": "Korea Republic",
+        "transfermarkt_name": "Korea, South",
+        "code": "KOR",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Macau",
+        "transfermarkt_name": "Macao",
+        "code": "MAC",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Mongolia",
+        "transfermarkt_name": "Mongolia",
+        "code": "MNG",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Northern Mariana Islands",
+        "transfermarkt_name": "",
+        "code": "NMI",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Bangladesh",
+        "transfermarkt_name": "Bangladesh",
+        "code": "BAN",
+        "competitions": [
+            "BGD1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Bhutan",
+        "transfermarkt_name": "",
+        "code": "BHU",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "India",
+        "transfermarkt_name": "India",
+        "code": "IND",
+        "competitions": [
+            "IND1"
+        ],
+        "youth_competitions": [
+            "ID17"
+        ]
+    },
+    {
+        "name": "Maldives",
+        "transfermarkt_name": "",
+        "code": "MDV",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Nepal",
+        "transfermarkt_name": "Nepal",
+        "code": "NEP",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Pakistan",
+        "transfermarkt_name": "Pakistan",
+        "code": "PAK",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Sri Lanka",
+        "transfermarkt_name": "Sri Lanka",
+        "code": "SRI",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Bahrain",
+        "transfermarkt_name": "Bahrain",
+        "code": "BHR",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Iraq",
+        "transfermarkt_name": "Iraq",
+        "code": "IRQ",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Jordan",
+        "transfermarkt_name": "Jordan",
+        "code": "JOR",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Kuwait",
+        "transfermarkt_name": "Kuwait",
+        "code": "KUW",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Lebanon",
+        "transfermarkt_name": "Lebanon",
+        "code": "LBN",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Oman",
+        "transfermarkt_name": "Oman",
+        "code": "OMA",
+        "competitions": [
+            "OM1L"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Palestine",
+        "transfermarkt_name": "Palestine",
+        "code": "PLE",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Qatar",
+        "transfermarkt_name": "Qatar",
+        "code": "QAT",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Saudi Arabia",
+        "transfermarkt_name": "Saudi Arabia",
+        "code": "KSA",
+        "competitions": [
+            "SA1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Syria",
+        "transfermarkt_name": "Syria",
+        "code": "SYR",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "United Arab Emirates",
+        "transfermarkt_name": "United Arab Emirates",
+        "code": "UAE",
+        "competitions": [
+            "UAE1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Yemen",
+        "transfermarkt_name": "Yemen",
+        "code": "YEM",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Algeria",
+        "transfermarkt_name": "Algeria",
+        "code": "ALG",
+        "competitions": [
+            "ALG1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Egypt",
+        "transfermarkt_name": "Egypt",
+        "code": "EGY",
+        "competitions": [
+            "EGY1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Libya",
+        "transfermarkt_name": "Libya",
+        "code": "LBY",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Morocco",
+        "transfermarkt_name": "Morocco",
+        "code": "MAR",
+        "competitions": [
+            "MAR1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Tunisia",
+        "transfermarkt_name": "Tunisia",
+        "code": "TUN",
+        "competitions": [
+            "TUN1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Benin",
+        "transfermarkt_name": "Benin",
+        "code": "BEN",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Burkina Faso",
+        "transfermarkt_name": "Burkina Faso",
+        "code": "BFA",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Cape Verde",
+        "transfermarkt_name": "Cape Verde",
+        "code": "CPV",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Gambia",
+        "transfermarkt_name": "The Gambia",
+        "code": "GAM",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Ghana",
+        "transfermarkt_name": "Ghana",
+        "code": "GHA",
+        "competitions": [
+            "GHPL"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Guinea",
+        "transfermarkt_name": "Guinea",
+        "code": "GUI",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Guinea-Bissau",
+        "transfermarkt_name": "Guinea-Bissau",
+        "code": "GNB",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Ivory Coast",
+        "transfermarkt_name": "Cote d'Ivoire",
+        "code": "CIV",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Liberia",
+        "transfermarkt_name": "Liberia",
+        "code": "LBR",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Mali",
+        "transfermarkt_name": "Mali",
+        "code": "MLI",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Mauritania",
+        "transfermarkt_name": "Mauritania",
+        "code": "MTN",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Niger",
+        "transfermarkt_name": "Niger",
+        "code": "NIG",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Nigeria",
+        "transfermarkt_name": "Nigeria",
+        "code": "NGA",
+        "competitions": [
+            "NPFL"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Senegal",
+        "transfermarkt_name": "Senegal",
+        "code": "SEN",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Sierra Leone",
+        "transfermarkt_name": "Sierra Leone",
+        "code": "SLE",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Togo",
+        "transfermarkt_name": "Togo",
+        "code": "TOG",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Cameroon",
+        "transfermarkt_name": "Cameroon",
+        "code": "CMR",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Central African Republic",
+        "transfermarkt_name": "Central African Republic",
+        "code": "CAR",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Chad",
+        "transfermarkt_name": "Chad",
+        "code": "CHA",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Congo",
+        "transfermarkt_name": "Congo",
+        "code": "CGO",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "DR Congo",
+        "transfermarkt_name": "DR Congo",
+        "code": "COD",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Equatorial Guinea",
+        "transfermarkt_name": "Equatorial Guinea",
+        "code": "EQG",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Gabon",
+        "transfermarkt_name": "Gabon",
+        "code": "GAB",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "S\u00e3o Tom\u00e9 and Pr\u00edncipe",
+        "transfermarkt_name": "Sao Tome and Principe",
+        "code": "STP",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Burundi",
+        "transfermarkt_name": "Burundi",
+        "code": "BDI",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Djibouti",
+        "transfermarkt_name": "Djibouti",
+        "code": "DJI",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Eritrea",
+        "transfermarkt_name": "Eritrea",
+        "code": "ERI",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Ethiopia",
+        "transfermarkt_name": "Ethiopia",
+        "code": "ETH",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Kenya",
+        "transfermarkt_name": "Kenya",
+        "code": "KEN",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Rwanda",
+        "transfermarkt_name": "Rwanda",
+        "code": "RWA",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Somalia",
+        "transfermarkt_name": "Somalia",
+        "code": "SOM",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "South Sudan",
+        "transfermarkt_name": "Southern Sudan",
+        "code": "SSD",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Sudan",
+        "transfermarkt_name": "Sudan",
+        "code": "SDN",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Tanzania",
+        "transfermarkt_name": "Tanzania",
+        "code": "TAN",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Uganda",
+        "transfermarkt_name": "Uganda",
+        "code": "UGA",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Zanzibar",
+        "transfermarkt_name": "",
+        "code": "ZAN",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Angola",
+        "transfermarkt_name": "Angola",
+        "code": "ANG",
+        "competitions": [
+            "AN1L"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Botswana",
+        "transfermarkt_name": "Botsuana",
+        "code": "BOT",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Comoros",
+        "transfermarkt_name": "Comoros",
+        "code": "COM",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Eswatini",
+        "transfermarkt_name": "Eswatini",
+        "code": "SWZ",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Lesotho",
+        "transfermarkt_name": "Lesotho",
+        "code": "LES",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Madagascar",
+        "transfermarkt_name": "Madagascar",
+        "code": "MAD",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Malawi",
+        "transfermarkt_name": "Malawi",
+        "code": "MWI",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Mauritius",
+        "transfermarkt_name": "Mauritius",
+        "code": "MRI",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Mozambique",
+        "transfermarkt_name": "Mozambique",
+        "code": "MOZ",
+        "competitions": [
+            "MO1L"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Namibia",
+        "transfermarkt_name": "Namibia",
+        "code": "NAM",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Seychelles",
+        "transfermarkt_name": "",
+        "code": "SEY",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "South Africa",
+        "transfermarkt_name": "South Africa",
+        "code": "RSA",
+        "competitions": [
+            "SFA1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Zambia",
+        "transfermarkt_name": "Zambia",
+        "code": "ZAM",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Zimbabwe",
+        "transfermarkt_name": "Zimbabwe",
+        "code": "ZIM",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "R\u00e9union",
+        "transfermarkt_name": "R\u00e9union",
+        "code": "REU",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "American Samoa",
+        "transfermarkt_name": "",
+        "code": "ASA",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Cook Islands",
+        "transfermarkt_name": "Cookinseln",
+        "code": "COK",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Fiji",
+        "transfermarkt_name": "Fiji",
+        "code": "FIJ",
+        "competitions": [
+            "FIJ1"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Kiribati",
+        "transfermarkt_name": "",
+        "code": "KIR",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "New Caledonia",
+        "transfermarkt_name": "Neukaledonien",
+        "code": "NCL",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "New Zealand",
+        "transfermarkt_name": "New Zealand",
+        "code": "NZL",
+        "competitions": [
+            "NZNL"
+        ],
+        "youth_competitions": []
+    },
+    {
+        "name": "Papua New Guinea",
+        "transfermarkt_name": "Papua New Guinea",
+        "code": "PNG",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Samoa",
+        "transfermarkt_name": "Samoa",
+        "code": "SAM",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Solomon Islands",
+        "transfermarkt_name": "Solomon Islands",
+        "code": "SOL",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Tahiti",
+        "transfermarkt_name": "",
+        "code": "TAH",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Tonga",
+        "transfermarkt_name": "Tonga",
+        "code": "TGA",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Tuvalu",
+        "transfermarkt_name": "",
+        "code": "TUV",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Vanuatu",
+        "transfermarkt_name": "Vanuatu",
+        "code": "VAN",
+        "competitions": [],
+        "youth_competitions": []
+    }
+]
