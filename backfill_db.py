@@ -77,19 +77,3 @@ if __name__ == '__main__':
                         break
 
             unsaved_clubs = [k for k, j in club_status_table.items() if not j]
-
-
-    
-
-
-    
-
-
-    
-
-
-
-
-    
-
-                
