@@ -229,7 +229,26 @@
         "competitions": [
             "FR1",
             "FR2",
-            "FR3"
+            "FR3",
+            [
+                "CN2D",
+                "CN2C",
+                "CN2B",
+                "CN2A"
+            ],
+            [
+                "C3AR",
+                "C3HF",
+                "C3CM",
+                "C3GE",
+                "C3NA",
+                "C3PL",
+                "C3BR",
+                "C3NO",
+                "C3IF",
+                "C3BF",
+                "C3VL"
+            ]
         ],
         "youth_competitions": [
             "F19A",
@@ -255,7 +274,67 @@
         "competitions": [
             "L1",
             "L2",
-            "L3"
+            "L3",
+            [
+                "RLSW",
+                "RLB3",
+                "RLW3",
+                "RLN4",
+                "RLN3"
+            ],
+            [
+                "OBLK",
+                "OLB1",
+                "OLB2",
+                "OBLG",
+                "OLRP",
+                "OLMR",
+                "OBLN",
+                "OBLL",
+                "OBLB",
+                "OBLC",
+                "OBLJ",
+                "OBLF",
+                "OLNI",
+                "OLW3"
+            ],
+            [
+                "LBSW",
+                "VLBA",
+                "VLW1",
+                "LNBR",
+                "VLHM",
+                "LLSA",
+                "BRBL",
+                "SLI",
+                "LLL",
+                "VLHN",
+                "LBNW",
+                "VLBE",
+                "LLHM",
+                "LBNO",
+                "VLW2",
+                "LLHO",
+                "LLSL",
+                "LBMI",
+                "LBSO",
+                "LLHA",
+                "LLHB",
+                "LLM1",
+                "LLM2",
+                "LNHA",
+                "LNR1",
+                "LNR2",
+                "LNWE",
+                "RHL",
+                "THLI",
+                "VLBW",
+                "VLHS",
+                "VLMV",
+                "VLSA",
+                "VLSB",
+                "VLSW"
+            ]
         ],
         "youth_competitions": [
             "AJ2",
@@ -331,6 +410,17 @@
                 "IT3A",
                 "IT3C",
                 "IT3B"
+            ],
+            [
+                "IT4A",
+                "IT4B",
+                "IT4C",
+                "IT4D",
+                "IT4E",
+                "IT4F",
+                "IT4G",
+                "IT4H",
+                "IT4I"
             ]
         ],
         "youth_competitions": [
