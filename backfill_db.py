@@ -77,3 +77,11 @@ if __name__ == '__main__':
                         break
 
             unsaved_clubs = [k for k, j in club_status_table.items() if not j]
+
+    for i in all_competitions:
+        competition_id = i['id']
+        print(f'Saving players for {competition_id}')
+        players = list(Player.from_competition(competition_id))
+        save_players(players)
+        pause = random.random() + 1.5
+        time.sleep(pause)
