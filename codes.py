@@ -411,24 +411,26 @@ OCF = {
 
 
 positions = {
-    'Attacking Midfield': 'AM',
-    'Central Midfield': 'CM',
-    'Centre-Back': 'CB',
-    'Centre-Forward': 'CF',
-    'Defender': 'D',
-    'Defensive Midfield': 'DM',
-    'Goalkeeper': 'GK',
-    'Left Midfield': 'LM',
-    'Left Winger': 'LW',
-    'Left-Back': 'LB',
-    'Mittelfeld': 'M',
-    'Right Midfield': 'RM',
-    'Right Winger': 'RW',
-    'Right-Back': 'RB',
-    'Second Striker': 'SS',
-    'Striker': 'ST',
-    'Sweeper': 'SW'
+    'AM': 'Attacking Midfield',
+    'CM': 'Central Midfield',
+    'CB': 'Centre-Back',
+    'CF': 'Centre-Forward',
+    'D': 'Defender',
+    'DM': 'Defensive Midfield',
+    'GK': 'Goalkeeper',
+    'LM': 'Left Midfield',
+    'LW': 'Left Winger',
+    'LB': 'Left-Back',
+    'M': 'Mittelfeld',
+    'RM': 'Right Midfield',
+    'RW': 'Right Winger',
+    'RB': 'Right-Back',
+    'SS': 'Second Striker',
+    'ST': 'Striker',
+    'SW': 'Sweeper'
 }
+
+
 
 
 transfermarkt_countries = [
