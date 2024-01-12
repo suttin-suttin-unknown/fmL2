@@ -2176,5 +2176,19 @@
         "code": "JE",
         "competitions": [],
         "youth_competitions": []
+    },
+    {
+        "name": "Jersey",
+        "transfermarkt_name": "Jersey",
+        "code": "JE",
+        "competitions": [],
+        "youth_competitions": []
+    },
+    {
+        "name": "Mayotte",
+        "transfermarkt_name": "Mayotte",
+        "code": "YT",
+        "competitions": [],
+        "youth_competitions": []
     }
 ]
