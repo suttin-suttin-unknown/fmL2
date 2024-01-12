@@ -28,3 +28,4 @@ def get_years_and_months(d1, d2):
             months = 11
 
     return years, months
+default_header = ['Name', 'Age', 'Nat.', 'Pos.', 'Club', 'MV', 'Height', 'Foot']

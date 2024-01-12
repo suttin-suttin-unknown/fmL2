@@ -141,16 +141,14 @@ class Player(Record):
         return players
             
 
-default_header = ['Name', 'Age', 'Nat.', 'Pos.', 'Club', 'MV', 'Height', 'Foot']
-
-
 class Table:
-    def __init__(self, header=default_header, age_relative=True, country_code=True, position_code=True, height_us=True):
+    def __init__(self, header=shared.default_header, age_relative=True, country_code=True, position_code=True, height_us=True):
         self.header = header
         self.age_relative = age_relative
         self.country_code = country_code
         self.position_code = position_code
         self.height_us = height_us
+        
         self._results = []
 
     def format_age(self, result):
