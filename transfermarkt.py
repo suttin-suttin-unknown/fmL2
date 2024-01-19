@@ -2,18 +2,12 @@ import codes
 import shared
 
 import json
-import random
 import re
-import statistics
-import time
-from collections import defaultdict
 from datetime import datetime
-from operator import itemgetter
 from itertools import chain
 
 import requests
 from unidecode import unidecode
-from prettytable import PrettyTable
 from pymongo import MongoClient
 
 
@@ -210,8 +204,6 @@ def save_all_countries():
         Player().save_country(country_name=name)
 
     
-
-
 def search_players(sort_by=('market_value_number', -1), limit=None, group_by=None, **filters):
     query = {}
     
@@ -259,17 +251,10 @@ def search_players(sort_by=('market_value_number', -1), limit=None, group_by=Non
 
     return results
 
+
 def search_by_name(name):
     name = unidecode(name)
     with get_client() as client:
         db = client[DB_NAME]
         table = db['players']
         return list(table.find({'name_decoded': name}))
-    
-
-
-# if __name__ == '__main__':
-#     g = display_table(search_players(mv_max=2500000, age_max=28, limit=50, positions=['GK']), group_by='age')
-#     d = display_table(search_players(mv_max=2500000, age_max=24, limit=300, positions=['CB', 'RB', 'LB', 'SW', 'D']), group_by='age')
-#     m = display_table(search_players(mv_max=2500000, age_max=23, limit=300, positions=['CM', 'AM', 'DM', 'LM', 'RM', 'M']), group_by='age')
-#     f = display_table(search_players(mv_max=2500000, age_max=23, limit=300, positions=['CF', 'ST', 'SS', 'LW', 'RW']), group_by='age')
