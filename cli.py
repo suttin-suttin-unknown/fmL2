@@ -110,6 +110,19 @@ def get_players(country, prefs, stats):
 
     if stats:
         mvs = [i.get('market_value_number', 0) for i in players]
+        if len(mvs) > 0:
+            max_mv = abbreviate_number(max(mvs))
+            min_mv = abbreviate_number(min(mvs))
+            mean = abbreviate_number(statistics.mean(mvs))
+            hmean = abbreviate_number(statistics.harmonic_mean(mvs))
+            stats_table = PrettyTable()
+            stats_table.field_names = ['Count', 'Max MV', 'Min MV', 'Mean', 'HMean']
+            stats_table.add_row([len(players), f'€{max_mv}', f'€{min_mv}', f'€{mean}', f'€{hmean}'])
+            print(stats_table)
+
+def get_stats_table(players):
+    mvs = [j for j in [i.get('market_value_number', 0) for i in players] if j > 0]
+    if len(mvs) != 0:
         max_mv = abbreviate_number(max(mvs))
         min_mv = abbreviate_number(min(mvs))
         mean = abbreviate_number(statistics.mean(mvs))
@@ -117,18 +130,7 @@ def get_players(country, prefs, stats):
         stats_table = PrettyTable()
         stats_table.field_names = ['Count', 'Max MV', 'Min MV', 'Mean', 'HMean']
         stats_table.add_row([len(players), f'€{max_mv}', f'€{min_mv}', f'€{mean}', f'€{hmean}'])
-        print(stats_table)
-
-def get_stats_table(players):
-    mvs = [j for j in [i.get('market_value_number', 0) for i in players] if j > 0]
-    max_mv = abbreviate_number(max(mvs))
-    min_mv = abbreviate_number(min(mvs))
-    mean = abbreviate_number(statistics.mean(mvs))
-    hmean = abbreviate_number(statistics.harmonic_mean(mvs))
-    stats_table = PrettyTable()
-    stats_table.field_names = ['Count', 'Max MV', 'Min MV', 'Mean', 'HMean']
-    stats_table.add_row([len(players), f'€{max_mv}', f'€{min_mv}', f'€{mean}', f'€{hmean}'])
-    return stats_table
+        return stats_table
 
 @click.command
 @click.option('--prefs', '-p', default=DEFAULT_PREFS)
@@ -142,24 +144,26 @@ def sample_position(country, size, prefs):
     players = sorted(players, key=lambda d: -d.get('market_value_number', 0))
     if max_age := prefs.get('max_age'):
         players = [i for i in players if i.get('age', 0) <= max_age]
-    position_list = ['CB', 'LB', 'RB', 'DM', 'CM', 'AM', 'LW', 'RW', 'CF']
+    #position_list = ['CB', 'LB', 'RB', 'DM', 'CM', 'AM', 'LW', 'RW', 'CF']
+    position_list = list(codes.positions.keys())
     for p_code in position_list:
         p = codes.positions[p_code]
-        print(p)
         players_sample = [i for i in players if i['position'] == p]
-        players_sample = players_sample[0:size]
+        if players_sample:
+            print(p)
+            players_sample = players_sample[0:size]
 
-        table = PrettyTable()
-        table.field_names = list(default_keys.keys())
-        for player in players_sample:
-            table.add_row([player.get(f, '-') for f in table.field_names])
-        
-        for i in table.field_names:
-            table.align[i] = 'l'
-        print(table)
+            table = PrettyTable()
+            table.field_names = list(default_keys.keys())
+            for player in players_sample:
+                table.add_row([player.get(f, '-') for f in table.field_names])
+            
+            for i in table.field_names:
+                table.align[i] = 'l'
+            print(table)
 
-        stats_table = get_stats_table(players_sample)
-        print(stats_table)
+            stats_table = get_stats_table(players_sample)
+            print(stats_table)
 
 
 @click.command
@@ -202,6 +206,7 @@ def partition_table(prefs_file):
         prefs = json.load(f)
 
     print(prefs)
+
 
 cli.add_command(get_country_stats)
 cli.add_command(get_players)
