@@ -8,6 +8,7 @@ from operator import itemgetter
 
 from prettytable import PrettyTable
 import click
+import numpy
 
 
 DEFAULT_PREFS = 'prefs/main.json'
@@ -123,13 +124,18 @@ def get_players(country, prefs, stats):
 def get_stats_table(players):
     mvs = [j for j in [i.get('market_value_number', 0) for i in players] if j > 0]
     if len(mvs) != 0:
-        max_mv = abbreviate_number(max(mvs))
-        min_mv = abbreviate_number(min(mvs))
-        mean = abbreviate_number(statistics.mean(mvs))
-        hmean = abbreviate_number(statistics.harmonic_mean(mvs))
+        q1 = numpy.percentile(mvs, 25)
+        q3 = numpy.percentile(mvs, 75)
+        iqr = q3 - q1
+        u_bound = q3 + (1.5 * iqr)
+        l_bound = q1 - (1.5 * iqr)
+        outliers = [i for i in mvs if i > u_bound or i < l_bound]
+        n = len(mvs)
+        n_outliers = len(outliers)
+        mean = statistics.mean(mvs)
         stats_table = PrettyTable()
-        stats_table.field_names = ['Count', 'Max MV', 'Min MV', 'Mean', 'HMean']
-        stats_table.add_row([len(players), f'€{max_mv}', f'€{min_mv}', f'€{mean}', f'€{hmean}'])
+        stats_table.field_names = ['N', 'N_Outliers', 'Mean', 'IQR_U']
+        stats_table.add_row([n, f'{n_outliers} ({round(n_outliers/n * 100, 2)}%)', f'€{abbreviate_number(mean)}', f'€{abbreviate_number(u_bound)}'])
         return stats_table
 
 @click.command
@@ -167,6 +173,46 @@ def sample_position(country, size, prefs):
 
 
 @click.command
+@click.option('--skip', default=True)
+@click.option('--prefs', '-p', default=DEFAULT_PREFS)
+@click.option('--size', '-s', default=50)
+@click.argument('country')
+def aggregate_positions(country, size, prefs, skip):
+    with open(prefs) as f:
+        prefs = json.load(f)
+
+    players = Player().from_country(country_name=country)
+    if max_age := prefs.get('max_age'):
+        players = [i for i in players if i.get('age', 0) <= max_age]
+
+    position_list = list(codes.positions.keys())
+    all_samples = []
+    for pc in position_list:
+        p = codes.positions[pc]
+        players_sample = [i for i in players if i['position'] == p]
+        if players_sample:
+            players_sample = players_sample[0:size]
+            all_samples.extend(players_sample)
+
+    all_samples = sorted(all_samples, key=lambda d: -d.get('market_value_number', 0))
+    if skip:
+        all_samples = [i for i in all_samples if i.get('market_value_number')]
+
+
+    table = PrettyTable()
+    table.field_names = list(default_keys.keys())
+    for player in all_samples:
+        table.add_row([player.get(f, '-') for f in table.field_names])
+
+    for i in table.field_names:
+        table.align[i] = 'l'
+    print(table)
+
+    stats_table = get_stats_table(all_samples)
+    print(stats_table)
+
+
+@click.command
 @click.option('--max-age', '-ma')
 @click.option('--limit', '-l')
 @click.option('--country', '-c')
@@ -195,24 +241,11 @@ def get_foreigners(country, limit, max_age):
     print(len(foreigners))
 
 
-@click.command
-@click.option('--prefs-file')
-def partition_table(prefs_file):
-    if not prefs_file:
-        prefs_file = DEFAULT_PREFS
-    
-    prefs = {}
-    with open(prefs_file) as f:
-        prefs = json.load(f)
-
-    print(prefs)
-
-
 cli.add_command(get_country_stats)
 cli.add_command(get_players)
 cli.add_command(get_foreigners)
-cli.add_command(partition_table)
 cli.add_command(sample_position)
+cli.add_command(aggregate_positions)
 
 if __name__ == '__main__':
     cli()
