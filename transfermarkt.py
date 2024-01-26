@@ -52,85 +52,68 @@ class Record:
     def __init__(self, name):
         self.name = name
 
-    def find(self, id):
+    def find(self, *ids):
         with get_client() as client:
             table = client[DB_NAME][self.name]
-            return table.find_one({'id': id})
-        
-    def find_many(self, ids):
-        with get_client() as client:
-            table = client[DB_NAME][self.name]
+            if len(ids) == 1:
+                return [table.find_one({'id': ids[0]})]
             return list(table.find({'id': {'$in': ids}}))
         
-    def save(self, record):
+    def save(self, *records):
         with get_client() as client:
             table = client[DB_NAME][self.name]
-            table.insert_one(record)
-
-    def save_many(self, records):
-        with get_client() as client:
-            table = client[DB_NAME][self.name]
-            table.insert_many(records)
-                
+            if len(records) == 1:
+                table.insert_one(records[0])
+            else:
+                table.insert_many(records)
+            
 
 class Competition(Record):
     def __init__(self):
         super().__init__(name='competitions')
 
-    def from_country(self, tier=None, country_name=None, country_code=None):
+    def from_country(self, name):
         countries = None
         with open('countries.json') as f:
             countries = json.load(f)
+
+        country = [i for i in countries if i['name'] == name][0]
         
-        if country_name:
-            country = [i for i in countries if i['name'] == country_name][0]
-        elif country_code:
-            country = [i for i in countries if i['code'] == country_code][0]
-
         competitions = []
-        if not tier:
-            for c in country['competitions'] + country['youth_competitions']:
-                if isinstance(c, list):
-                    competitions.extend(c)
-                if isinstance(c, str):
-                    competitions.append(c)
+        for c in country['competitions'] + country['youth_competitions']:
+            if isinstance(c, list):
+                competitions.extend(c)
+            if isinstance(c, str):
+                competitions.append(c)
 
-        if tier:
-            if tier == 'y':
-                competitions.extend(country['youth_competitions'])
-            else:
-                tc = country['competitions'][tier - 1]
-                if isinstance(tc, list):
-                    competitions.extend(tc)
-                if isinstance(tc, str):
-                    competitions.append(tc)
-
-        if len(competitions) > 1:
-            return self.find_many(competitions)
-        if len(competitions) == 1:
-            return [self.find(competitions[0])]
+        return self.find(*competitions)
 
 
 class Club(Record):
     def __init__(self):
         super().__init__(name='clubs')
 
-    def from_country(self, tier=None, country_name=None, country_code=None):
-        comps = Competition().from_country(tier=tier, country_name=country_name, country_code=country_code)
-        if comps:
-            clubs = list(chain(*[i['clubs'] for i in comps]))
-            clubs_ids = [i['id'] for i in clubs]
-            result = list(self.find_many(clubs_ids))
-            result = dict((i['id'], i) for i in result)
-            return [{'club': i['name'], 'club_id': i['id'], **result[i['id']]} for i in clubs]
+    def from_country(self, name):
+        competitions = Competition().from_country(name)
+        if competitions:
+            clubs = list(chain(*[i['clubs'] for i in competitions]))
+            ids = [i['id'] for i in clubs]
+            result = self.find(*ids)
+            if result:
+                result = dict((i['id'], i) for i in list(result))
+                try:
+                    return [{'club': i['name'], 'club_id': i['id'], **result[i['id']]} for i in clubs]
+                except KeyError as err:
+                    print(err.args)
+            return []
         
 
 class Player(Record):
     def __init__(self):
         super().__init__(name='players')
 
-    def from_country(self, tier=None, country_name=None, country_code=None):
-        clubs = Club().from_country(tier=tier, country_name=country_name, country_code=country_code)
+    def from_country(self, name):
+        clubs = Club().from_country(name)
         players = []
         if clubs:
             for i in clubs:
@@ -184,27 +167,18 @@ class Player(Record):
 
         return formatted
 
-    def save_country(self, country_name=None, country_code=None):
-        players = self.from_country(country_name=country_name, country_code=country_code)
+    def save_country(self, name):
+        players = self.from_country(name)
         ids = {i['id'] for i in players}
-        result = self.find_many(list(ids))
+        result = self.find(*list(ids))
         ids = ids - {i['id'] for i in result}
         if len(ids) != 0:
             print(f'Saving {len(ids)} players.')
             players = [i for i in players if i['id'] in ids]
-            self.save_many(players)
-
-
-def save_all_countries():
-    with open('countries.json') as f:
-        countries = json.load(f)
-
-    for i in countries:
-        name = i['name']
-        Player().save_country(country_name=name)
+            self.save(*players)
 
     
-def search_players(sort_by=('market_value_number', -1), limit=None, group_by=None, **filters):
+def search_players(sort_by=('market_value_number', -1), limit=None, **filters):
     query = {}
     
     age_max = filters.get('age_max')
@@ -252,9 +226,23 @@ def search_players(sort_by=('market_value_number', -1), limit=None, group_by=Non
     return results
 
 
+def save_countries():
+    with open('countries.json') as f:
+        countries = json.load(f)
+    
+    for i in countries:
+        name = i['name']
+        Player().save_country(name)
+
+
 def search_by_name(name):
     name = unidecode(name)
     with get_client() as client:
         db = client[DB_NAME]
         table = db['players']
         return list(table.find({'name_decoded': name}))
+
+
+class Query:
+    def __init__(self):
+        pass

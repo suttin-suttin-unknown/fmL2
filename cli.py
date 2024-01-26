@@ -43,6 +43,9 @@ def get_tm_names():
         return dict((i['transfermarkt_name'], i['code']) for i in countries)
     
 
+def get_default_table():
+    pass
+
 @click.group
 def cli():
     pass
@@ -56,7 +59,7 @@ def get_country_stats():
     countries = [i for i in countries if i['competitions']]
     mvs = {}
     for country in countries:
-        players = Player().from_country(country_code=country['code'])
+        players = Player().from_country(country['name'])
         players = [i for i in players if i.get('market_value_number')]
         mv = [i['market_value_number'] for i in players]
         mvs[country['name']] = sum(mv)
@@ -82,7 +85,7 @@ def get_players(country, prefs, stats):
     with open(prefs) as f:
         prefs = json.load(f)
 
-    players = Player().from_country(country_name=country)
+    players = Player().from_country(country)
     players = sorted(players, key=lambda d: -d.get('market_value_number', 0))
     if max_age := prefs.get('max_age'):
         max_age = int(max_age)
@@ -146,11 +149,10 @@ def sample_position(country, size, prefs):
     with open(prefs) as f:
         prefs = json.load(f)
 
-    players = Player().from_country(country_name=country)
+    players = Player().from_country(country)
     players = sorted(players, key=lambda d: -d.get('market_value_number', 0))
     if max_age := prefs.get('max_age'):
         players = [i for i in players if i.get('age', 0) <= max_age]
-    #position_list = ['CB', 'LB', 'RB', 'DM', 'CM', 'AM', 'LW', 'RW', 'CF']
     position_list = list(codes.positions.keys())
     for p_code in position_list:
         p = codes.positions[p_code]
@@ -181,7 +183,7 @@ def aggregate_positions(country, size, prefs, skip):
     with open(prefs) as f:
         prefs = json.load(f)
 
-    players = Player().from_country(country_name=country)
+    players = Player().from_country(country)
     if max_age := prefs.get('max_age'):
         players = [i for i in players if i.get('age', 0) <= max_age]
 
@@ -217,7 +219,7 @@ def aggregate_positions(country, size, prefs, skip):
 @click.option('--limit', '-l')
 @click.option('--country', '-c')
 def get_foreigners(country, limit, max_age):
-    players = Player().from_country(country_name=country)
+    players = Player().from_country(country)
     players = sorted(players, key=lambda d: -d.get('market_value_number', 0))
     if max_age:
         max_age = int(max_age)
