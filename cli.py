@@ -233,8 +233,6 @@ def aggregate_positions(country, size, prefs, skip):
     print(stats_table)
 
 
-
-
 cli.add_command(get_country_stats)
 cli.add_command(get_players)
 cli.add_command(sample_position)
