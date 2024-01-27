@@ -43,8 +43,34 @@ def get_tm_names():
         return dict((i['transfermarkt_name'], i['code']) for i in countries)
     
 
-def get_default_table():
-    pass
+def get_default_table(results):
+    table = PrettyTable()
+    table.field_names = list(default_keys.keys())
+    if results:
+        tm_names = get_tm_names()
+        position_codes = dict((v, k) for k, v in codes.positions.items())
+        duplicates = dict((i['id'], False) for i in results)
+        for player in results:
+            if duplicates[player['id']] is False:
+                row = []            
+                row.append(player['name'])
+                row.append(player.get('age', '-'))
+                nationalities = '/'.join([tm_names[i] for i in player['nationality']])
+                row.append(nationalities)
+                position = position_codes[player['position']]
+                row.append(position)
+                row.append(player['club'])
+                row.append(player['marketValue'])
+                row.append(player.get('height', '-'))
+                row.append(player.get('foot', '-'))
+                table.add_row(row)
+                duplicates[player['id']] = True                
+
+        for i in table.field_names:
+            table.align[i] = 'l'
+
+        return table
+
 
 @click.group
 def cli():
@@ -199,53 +225,18 @@ def aggregate_positions(country, size, prefs, skip):
     all_samples = sorted(all_samples, key=lambda d: -d.get('market_value_number', 0))
     if skip:
         all_samples = [i for i in all_samples if i.get('market_value_number')]
-
-
-    table = PrettyTable()
-    table.field_names = list(default_keys.keys())
-    for player in all_samples:
-        table.add_row([player.get(f, '-') for f in table.field_names])
-
-    for i in table.field_names:
-        table.align[i] = 'l'
+    
+    table = get_default_table(all_samples)
     print(table)
 
     stats_table = get_stats_table(all_samples)
     print(stats_table)
 
 
-@click.command
-@click.option('--max-age', '-ma')
-@click.option('--limit', '-l')
-@click.option('--country', '-c')
-def get_foreigners(country, limit, max_age):
-    players = Player().from_country(country)
-    players = sorted(players, key=lambda d: -d.get('market_value_number', 0))
-    if max_age:
-        max_age = int(max_age)
-        players = [i for i in players if i.get('age', 0) <= max_age]
-
-    if limit:
-        limit = int(limit)
-        players = players[0:limit]
-    
-    foreigners = [i for i in players if i['nationality1'] != country and i.get('nationality2', '') != country]
-
-    table = PrettyTable()
-    table.field_names = list(default_keys.values())
-    for i in foreigners:
-        row = []
-        for k in default_keys.keys():
-            row.append(i.get(k))
-        table.add_row(row)
-
-    print(table)
-    print(len(foreigners))
 
 
 cli.add_command(get_country_stats)
 cli.add_command(get_players)
-cli.add_command(get_foreigners)
 cli.add_command(sample_position)
 cli.add_command(aggregate_positions)
 
